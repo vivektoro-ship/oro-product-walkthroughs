@@ -45,6 +45,8 @@ S = {
  "e34-schedule-takeover": "Schedule Takeover",
  "e35-select-lender-branch": "Select Lender Branch",
  "e36-gl-appointment-booked": "GL Appointment Booked",
+ "e37-assoc-retrieve": "Associated Visits",
+ "e38-assoc-custody": "Associated Visits",
 }
 
 FLOWS = [
@@ -58,14 +60,16 @@ FLOWS = [
    "e15-verify-partner","e16-verifying-otp","e17-otp-verified","e18-collect-gold-items",
    "e19-upload-gold-photo-co","e20-handover-gold-items","e21-store-gold","e22-gold-stored",
    "e23-handover-completed-stored"]),
- ("Gold Retrieval & Return", "elr-retrieval-return", "ELR · retrieval",
-  "Retrieve the stored gold and hand it back to the partner.",
-  ["e24-retrieval-associated-visits","e25-co-staff-retrieval-flow","e26-retrieval","e27-verify-partner-r",
-   "e28-partner-verification","e29-partner-live-photo","e30-handover-gold-items-r","e31-handover-gold",
-   "e32-handover-completed","e33-gold-collected"]),
- ("Schedule Takeover", "elr-schedule-takeover", "ELR · schedule",
-  "Book the takeover visit once the gold is released.",
-  ["e34-schedule-takeover","e35-select-lender-branch","e36-gl-appointment-booked"]),
+ ("Gold Retrieval — Partner", "elr-retrieval-partner", "ELR · retrieval",
+  "Partner comes to retrieve the stored gold.",
+  ["e24-retrieval-associated-visits","e26-retrieval"]),
+ ("Gold Return — CO", "elr-return-co", "ELR · CO staff",
+  "Cluster-office staff verify the partner and hand the gold back.",
+  ["e25-co-staff-retrieval-flow","e27-verify-partner-r","e28-partner-verification","e29-partner-live-photo",
+   "e30-handover-gold-items-r","e31-handover-gold","e32-handover-completed","e33-gold-collected"]),
+ ("Schedule GL Visit", "elr-schedule-takeover", "ELR · schedule",
+  "Once the gold is retrieved, book the takeover GL visit.",
+  ["e37-assoc-retrieve","e38-assoc-custody","e34-schedule-takeover","e35-select-lender-branch","e36-gl-appointment-booked"]),
 ]
 
 def datauri(stem):
