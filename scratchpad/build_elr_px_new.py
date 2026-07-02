@@ -47,6 +47,7 @@ S = {
  "e36-gl-appointment-booked": "GL Appointment Booked",
  "e37-assoc-retrieve": "Associated Visits",
  "e38-assoc-custody": "Associated Visits",
+ "e39-schedule-takeover-form": "Schedule Takeover",
 }
 
 FLOWS = [
@@ -69,7 +70,7 @@ FLOWS = [
    "e30-handover-gold-items-r","e31-handover-gold","e32-handover-completed","e33-gold-collected"]),
  ("Schedule GL Visit", "elr-schedule-takeover", "ELR · schedule",
   "Once the gold is retrieved, book the takeover GL visit.",
-  ["e37-assoc-retrieve","e38-assoc-custody","e34-schedule-takeover","e35-select-lender-branch","e36-gl-appointment-booked"]),
+  ["e37-assoc-retrieve","e38-assoc-custody","e34-schedule-takeover","e35-select-lender-branch","e39-schedule-takeover-form","e36-gl-appointment-booked"]),
 ]
 
 def datauri(stem):
