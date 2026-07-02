@@ -7,9 +7,7 @@ import base64, json, os, re
 
 HOME = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ASSETS = os.path.join(HOME, "assets/takeover-px-brl")
-DECKS = ["oro-takeover-cx-walkthrough.html",
-         "oro-field-apps-walkthrough.html",
-         "oro-all-flows-walkthrough.html"]
+DECKS = ["oro-field-apps-walkthrough.html"]   # scoped to field-apps only (per Vivek)
 
 # NN -> real page title. Verbatim header where present; body-status text for the
 # loan-ID-header screens (marked PENDING until the follow-up extraction lands).
@@ -49,6 +47,15 @@ TITLES = {
  "36": "Payment Proof Approved",
  "37": "Schedule ELR",
  "38": "BRL Visit Completed",
+ # inserted fund-transfer state
+ "39": "Fund Transfer Initiated",
+ # full schedule-ELR sequence
+ "40": "Schedule ELR", "41": "Schedule ELR Visit", "42": "Schedule ELR Visit",
+ "43": "Add ELR Address", "44": "Schedule ELR Visit", "45": "Schedule ELR",
+ "46": "Schedule ELR Visit", "47": "Schedule ELR Visit", "48": "Associated Visits",
+ "49": "BRL Visit Completed",
+ # the 2 correct payment-proof screens
+ "50": "Payment Proof", "51": "Payment Proof",
 }
 
 # flow grouping (name/slug/kicker/blurb + ordered step NNs)
@@ -59,14 +66,14 @@ FLOWS = [
  ("Add the co-borrower","tk-px-coborrower","Co-borrower","Capture and verify the co-borrower.",["10","11","12","13","14"]),
  ("Pledge card & release","tk-px-pledge","Pledge card","Add the pledge card and confirm the release amount.",["16","17","18","19","20","21","22"]),
  ("Approval & e-sign","tk-px-approval","Approval","Get the lender's approval and have the customer sign.",["23","24","25","26","27"]),
- ("Transfer the funds","tk-px-funds","Fund transfer","Capture the security cheque and disburse the loan.",["28","29","30","31"]),
- ("Payment proof","tk-px-proof","Payment proof","Settle the old loan and upload proof.",["32","33","34","35","36"]),
- ("Schedule the release","tk-px-release","Release visit","Book the visit to collect the customer's gold.",["37","38"]),
+ ("Transfer the funds","tk-px-funds","Fund transfer","Capture the security cheque and disburse the loan.",["28","29","30","39","31"]),
+ ("Payment proof","tk-px-proof","Payment proof","Settle the old loan and upload proof.",["32","50","51","36"]),
+ ("Schedule the release","tk-px-release","Release visit","Book the visit to collect the customer's gold.",["40","41","42","43","44","45","46","47","48","49"]),
 ]
 
 def fname(nn):
     for f in os.listdir(ASSETS):
-        if f.startswith(nn + "-") and f.endswith(".png"):
+        if (f.startswith(nn + "-") or f == nn + ".png") and f.endswith(".png"):
             return os.path.join(ASSETS, f)
     raise FileNotFoundError(nn)
 
