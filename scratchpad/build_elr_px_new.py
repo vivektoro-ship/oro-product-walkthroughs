@@ -76,9 +76,11 @@ def datauri(stem):
     with open(os.path.join(ASSETS, stem + ".png"), "rb") as fp:
         return "data:image/png;base64," + base64.b64encode(fp.read()).decode("ascii")
 
+CO_FLOWS = {"elr-collect-co", "elr-return-co"}
 new_flows = []
 for name, slug, kicker, blurb, stems in FLOWS:
-    steps = [{"img": datauri(st), "title": S[st], "caption": ""} for st in stems]
+    actor = "CO Staff" if slug in CO_FLOWS else "Partner"
+    steps = [{"img": datauri(st), "title": S[st], "caption": "", "actor": actor} for st in stems]
     new_flows.append({"name": name, "slug": slug, "kicker": kicker, "blurb": blurb, "steps": steps})
 
 html = open(DECK_FN, encoding="utf-8").read()

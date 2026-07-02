@@ -87,7 +87,7 @@ def build_group():
         raise SystemExit("TITLES still pending for: " + ", ".join(sorted(missing)))
     flows = []
     for name, slug, kicker, blurb, nns in FLOWS:
-        steps = [{"img": img_datauri(nn), "title": TITLES[nn], "caption": ""} for nn in nns]
+        steps = [{"img": img_datauri(nn), "title": TITLES[nn], "caption": "", "actor": "Partner"} for nn in nns]
         flows.append({"name": name, "slug": slug, "kicker": kicker, "blurb": blurb, "steps": steps})
     return {"platform": "Partner App", "kicker": "Takeover · what the partner does at the branch",
             "viewport": "mobile", "flows": flows}
