@@ -108,7 +108,12 @@ for deck_fn in DECKS:
         print("!! no takeover-partner group in", deck_fn, "- SKIPPED"); continue
     gi = hit[0]
     old = sum(len(f["steps"]) for f in deck[gi]["flows"])
-    deck[gi] = grp
+    new_grp = dict(grp)
+    # preserve composite landing tags (_product/_appType) from the group being replaced
+    for k in ("_product", "_appType"):
+        if k in deck[gi]:
+            new_grp[k] = deck[gi][k]
+    deck[gi] = new_grp
     new_html = html[:b] + json.dumps(deck, ensure_ascii=True) + html[e:]
     open(path, "w", encoding="utf-8").write(new_html)
     print("%-34s group[%d] replaced: %d -> %d screens, %d flows | %.1f MB"
