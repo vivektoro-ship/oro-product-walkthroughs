@@ -29,17 +29,15 @@ def find(pred):
     raise SystemExit("group not found")
 
 beagle = find(lambda g: g.get('_product') == 'Beagle revamp' and g['platform'] == 'Admin')
-tk_visits = find(lambda g: g.get('_product') == 'Takeover revamp' and g['platform'] == 'Admin — Visits')
 tk_loans = find(lambda g: g.get('_product') == 'Takeover revamp' and g['platform'] == 'Admin — Loans')
 
-beagle.update({"_product": "Beagle", "_appType": "Manage Visits", "viewport": "desktop",
-               "platform": "Admin", "kicker": "Beagle · how Ops manages gold loan visits"})
-tk_visits.update({"_product": "Takeover", "_appType": "Manage Visits", "viewport": "desktop",
-                  "platform": "Admin", "kicker": "Takeover · how Ops manages visits"})
-tk_loans.update({"_product": "Takeover", "_appType": "Manage Loans", "viewport": "desktop",
+# Loan flows only — no visit-management flows. Keep Beagle + BRL (Takeover loans).
+beagle.update({"_product": "Beagle", "_appType": "Loan Flows", "viewport": "desktop",
+               "platform": "Admin", "kicker": "Beagle · how Ops manages the gold loan"})
+tk_loans.update({"_product": "Takeover (BRL)", "_appType": "Loan Flows", "viewport": "desktop",
                  "platform": "Admin", "kicker": "Takeover · how Ops manages the bridge loan"})
 
-deck = [beagle, tk_visits, tk_loans]
+deck = [beagle, tk_loans]
 
 # slug uniqueness
 slugs = [f['slug'] for g in deck for f in g['flows']]
