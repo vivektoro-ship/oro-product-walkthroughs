@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#15110B">
+<title>Project One — What's Changing</title>
+<style>
+:root{--paper:#15110B;--paper-deep:#1E1A13;--rule:#383026;--rule-soft:#2A241B;
+  --ink:#F4ECDD;--ink-soft:#C9BEA6;--ink-faded:#8C8069;--gold:#E0A93D;--teal:#5FA8A0;--warn:#D2683F}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--paper);color-scheme:dark;-webkit-text-size-adjust:100%}
+body{background:var(--paper);color:var(--ink);font-family:Georgia,"Times New Roman",serif;
+  line-height:1.6;min-height:100vh;padding:56px 24px 96px;
+  background-image:radial-gradient(circle at 16% 6%,rgba(224,169,61,.07),transparent 55%),
+    radial-gradient(circle at 90% 88%,rgba(224,169,61,.05),transparent 55%);background-attachment:fixed}
+.wrap{max-width:62rem;margin:0 auto}
+.mono{font-family:ui-monospace,Menlo,"SF Mono",monospace}
+.kick{font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold)}
+
+/* hero */
+.hero{text-align:center;margin-bottom:14px}
+.hero .kick{color:var(--ink-faded)}
+h1{font-size:clamp(38px,7vw,68px);line-height:1.0;letter-spacing:-.025em;margin:16px 0 0}
+h1 em{font-style:italic;color:var(--gold)}
+.dek{font-style:italic;color:var(--ink-soft);max-width:42rem;margin:18px auto 0;font-size:clamp(16px,2vw,19px)}
+.orn{display:flex;align-items:center;justify-content:center;gap:14px;margin:28px auto 0;max-width:24rem}
+.orn .ln{height:1px;background:var(--rule);flex:1}.orn .gl{color:var(--gold)}
+
+/* sections */
+section{margin-top:52px}
+h2{font-size:clamp(24px,3.4vw,34px);letter-spacing:-.015em;line-height:1.1;
+  border-bottom:1px solid var(--rule);padding-bottom:14px;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+h2 .n{font-family:ui-monospace,Menlo,monospace;font-size:14px;color:var(--gold);letter-spacing:.1em}
+.lead{color:var(--ink-soft);font-size:17px;margin:18px 0 0;max-width:52rem}
+.lead + .lead{margin-top:12px}
+
+/* why: friction chips */
+.friction{list-style:none;display:grid;gap:12px;margin-top:22px}
+.friction li{padding:14px 18px;background:var(--paper-deep);border:1px solid var(--rule);border-radius:6px;
+  color:var(--ink-soft);font-size:15px;position:relative;padding-left:44px}
+.friction li::before{content:"✕";position:absolute;left:16px;top:14px;color:var(--warn);font-family:ui-monospace,monospace;font-size:13px}
+.friction li b{color:var(--ink);font-weight:400;font-style:italic}
+
+/* change groups */
+.grp{margin-top:30px;background:var(--paper-deep);border:1px solid var(--rule);border-radius:10px;padding:26px 26px 8px}
+.grp > .gh{font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:2px}
+.grp > h3{font-size:22px;letter-spacing:-.01em;margin:2px 0 6px}
+.grp > .gsub{color:var(--ink-faded);font-size:13px;font-style:italic;margin-bottom:16px}
+.chg{list-style:none;display:grid;gap:0}
+.chg li{padding:15px 0;border-top:1px solid var(--rule-soft);display:grid;grid-template-columns:minmax(0,15rem) 1fr;gap:8px 22px}
+.chg li:first-child{border-top:none}
+.chg .t{font-weight:400;color:var(--ink);font-size:16px}
+.chg .d{color:var(--ink-soft);font-size:14.5px}
+.chg .d b{color:var(--ink);font-weight:400;font-style:italic}
+@media(max-width:640px){.chg li{grid-template-columns:1fr;gap:4px}}
+
+/* platform matrix */
+.mx-scroll{overflow-x:auto;margin-top:22px;border:1px solid var(--rule);border-radius:10px}
+table{border-collapse:collapse;width:100%;min-width:680px;font-size:14px}
+th,td{text-align:left;vertical-align:top;padding:14px 16px;border-bottom:1px solid var(--rule-soft)}
+thead th{background:var(--paper-deep);font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--gold);border-bottom:1px solid var(--rule)}
+tbody th{font-size:16px;color:var(--ink);white-space:nowrap;width:12rem}
+tbody th small{display:block;font-family:ui-monospace,monospace;font-size:10px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink-faded);margin-top:3px;font-weight:400}
+td{color:var(--ink-soft)}
+td ul{list-style:none;display:grid;gap:6px}
+td li{padding-left:14px;position:relative}
+td li::before{content:"";position:absolute;left:0;top:9px;width:5px;height:5px;border-radius:50%;background:var(--gold)}
+tr:nth-child(even) td, tr:nth-child(even) th{background:rgba(255,255,255,.015)}
+.tag{display:inline-block;font-family:ui-monospace,monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
+  padding:1px 6px;border-radius:4px;border:1px solid var(--rule);color:var(--ink-faded);margin-left:6px;vertical-align:middle}
+
+/* footer */
+.foot{margin-top:56px;border-top:1px solid var(--rule);padding-top:18px;color:var(--ink-faded);font-size:13px}
+.foot .mono{color:var(--ink-faded)}
+.foot a{color:var(--gold);text-decoration:none}
+.note{margin-top:22px;padding:16px 18px;border-left:2px solid var(--gold);background:var(--paper-deep);
+  color:var(--ink-soft);font-size:14.5px;border-radius:0 6px 6px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <div class="kick">Oro &nbsp;·&nbsp; Project One &nbsp;·&nbsp; Change Brief</div>
+    <h1>What's <em>Changing</em></h1>
+    <p class="dek">Two flagship flows — the Branch-Led Gold Loan (BEAGLE) and the Takeover Engine — are being rebuilt to a single, low-friction, AA-integrated standard. This is the overview: why, what changes, and which apps it touches.</p>
+    <div class="orn"><span class="ln"></span><span class="gl">§</span><span class="ln"></span></div>
+  </div>
+
+  <section>
+    <h2><span class="n">01</span> Why we're doing this</h2>
+    <p class="lead">Both journeys had grown a set of manual, opaque, and disconnected steps. The revamp removes the friction, plugs the gaps, and brings the customer, partner, and ops experiences to parity — anchored on the <b>Account Aggregator (Finvu) SDK</b> for bank linking and <b>Mendix</b> for Federal prechecks and appraisal handling.</p>
+    <p class="lead">These are the friction points being removed:</p>
+    <ul class="friction">
+      <li>Customers were gated behind an <b>unnecessary Oro gold-valuation approval</b> before they could even see their plan.</li>
+      <li>Federal precheck failures were <b>opaque to partners</b> — no error copy, no way to act on them.</li>
+      <li>Bank-account selection was a <b>manual step disconnected from AA</b>, on both the gold-loan and takeover flows.</li>
+      <li>Loan purpose <b>wasn't captured</b> at the point of loan creation.</li>
+      <li>Fund-transfer confirmation was <b>entirely partner-driven</b> — no automation even when AA consent existed.</li>
+      <li>Co-borrower eSign had <b>no delivery or sharing mechanism</b>.</li>
+      <li>Existing-Lender-Release (ELR) visits had <b>no parent grouping, no search linkage, and no status visibility</b> from the loan view.</li>
+      <li>The Oro appraisal was <b>matched against the bank's sheet</b> for no added value — the bank's numbers are what count for the loan.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="n">02</span> What changes</h2>
+
+    <div class="grp">
+      <div class="gh">Engine A</div>
+      <h3>Gold Loan · BEAGLE <span class="tag">v1.1</span></h3>
+      <div class="gsub">Branch-led gold loan — the everyday Federal flow.</div>
+      <ul class="chg">
+        <li><span class="t">Valuation gate removed</span><span class="d">The Oro-side gold valuation step is gone from the loan flow — the customer lands <b>directly on plan selection</b>.</span></li>
+        <li><span class="t">Bank appraisal sheet step</span><span class="d">A new step where the partner records the <b>bank appraiser sheet</b> (manual now, image-read later) — the single mandatory valuation input.</span></li>
+        <li><span class="t">Federal precheck UI</span><span class="d">Sequential per-check loader on the partner app; on failure, <b>Screenshot + Copy-error</b> only (no retry — terminal, auto-cancels the visit).</span></li>
+        <li><span class="t">Loan purpose capture</span><span class="d">A new customer screen after plan confirmation — required before the loan can be submitted.</span></li>
+        <li><span class="t">AA bank linking</span><span class="d">The Finvu <b>AA SDK</b> replaces manual account entry; unsupported banks fall back to saved-account selection.</span></li>
+        <li><span class="t">AA-first fund confirmation</span><span class="d">Fund transfer confirms automatically via AA when consent exists, with <b>partner proof-upload as backup</b>. AA always wins on completion source.</span></li>
+        <li><span class="t">Reschedule &amp; cancel</span><span class="d">Customers can reschedule or cancel <b>before the visit starts</b> (amends the same visit, customer-only).</span></li>
+        <li><span class="t">Ops: visits &amp; queues</span><span class="d">Admin GL-visits refresh (5-path cancellation, <b>loan-state-conflict</b> reconciliation) and Atlas queues for API-failure &amp; fund-transfer-pending.</span></li>
+      </ul>
+    </div>
+
+    <div class="grp">
+      <div class="gh">Engine B</div>
+      <h3>Takeover Engine <span class="tag">v1.2</span></h3>
+      <div class="gsub">Moving a customer's gold loan to Oro: Offer → Bridge Loan (BRL) → Existing Lender Release (ELR) → Gold Loan.</div>
+      <ul class="chg">
+        <li><span class="t">Offer creation, revamped</span><span class="d">Guided, step-by-step offer with <b>camera capture + auto-read</b> replacing the old single manual form — across Customer, Partner, Admin, and Ringmaster.</span></li>
+        <li><span class="t">BRL · AA bank linking</span><span class="d">After the customer confirms the bridge-loan plan, the <b>AA SDK</b> opens and locks the payout account (saved-account fallback if unsupported).</span></li>
+        <li><span class="t">BRL · Co-borrower eSign</span><span class="d">A unique eSign link is generated after the primary signs, <b>sent by SMS</b> and shareable from the partner app's share tray.</span></li>
+        <li><span class="t">BRL · Check Payment Status</span><span class="d">The old "Change" button becomes <b>Check Payment Status</b> — AA-backed auto-check, with manual proof upload always available.</span></li>
+        <li><span class="t">ELR · scheduling</span><span class="d">Per-lender by default, with <b>combined-lender visits</b> supported (gold photos per lender captured within the combined visit).</span></li>
+        <li><span class="t">ELR · structure &amp; tracking</span><span class="d">One <b>parent ELR ID</b> per BRL visit; ELR visits shown as a tab in the BRL visit; searching an ELR ID lands on that tab.</span></li>
+        <li><span class="t">BRL status extended</span><span class="d">Four new statuses after ELR-scheduled: <b>ELR in progress → gold in Cluster Office → ELR complete → GL visit scheduled</b> (BV22–BV25).</span></li>
+        <li><span class="t">ELR for the customer</span><span class="d">A new <b>observational</b> status view — the customer follows their gold being released, stored, and brought back.</span></li>
+        <li><span class="t">Ops: BRL visits &amp; loan</span><span class="d">Loan-Ops surfaces for BRL <b>visit actions</b> and <b>loan actions</b> (payment-proof review, AA approval).</span></li>
+      </ul>
+    </div>
+
+    <div class="grp">
+      <div class="gh">Related change</div>
+      <h3>Decoupled Appraisal <span class="tag">separate PRD</span></h3>
+      <div class="gsub">Enables the valuation-gate removal above — Oro's own appraisal becomes its own module.</div>
+      <ul class="chg">
+        <li><span class="t">Out of the loan flow</span><span class="d">The Oro valuation is <b>removed from the gold-loan flow</b>; the bank appraiser sheet is the only mandatory input. No more matching.</span></li>
+        <li><span class="t">Standalone appraisal module</span><span class="d">A new partner-app module for Oro's own valuation — <b>ornament-level</b> capture (type, weight, purity, images, value), by phone number, with view / edit / re-appraise.</span></li>
+        <li><span class="t">Optional loan link</span><span class="d">A loan <b>can</b> link to an appraisal (from the loan flow) but it's <b>informational — never a gate</b>. Feeds part-release, top-up, settlement, and private-sale.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">03</span> Which platforms are affected</h2>
+    <p class="lead">Every surface is touched. At a glance:</p>
+    <div class="mx-scroll">
+      <table>
+        <thead><tr><th>Platform</th><th>Gold Loan (BEAGLE)</th><th>Takeover Engine</th><th>Appraisal</th></tr></thead>
+        <tbody>
+          <tr>
+            <th>Customer App<small>Cx · mobile</small></th>
+            <td><ul><li>Valuation gate removed</li><li>Loan purpose screen</li><li>AA bank linking (Finvu)</li><li>Reschedule / cancel</li><li>Multi-loan view + eSign retry</li></ul></td>
+            <td><ul><li>Offers (revamped)</li><li>BRL execution — AA linking, co-borrower eSign, BV21–BV25 stepper</li><li>ELR status view (observational)</li></ul></td>
+            <td><ul><li>—</li></ul></td>
+          </tr>
+          <tr>
+            <th>Partner App<small>Px · mobile</small></th>
+            <td><ul><li>Federal precheck UI</li><li>Bank appraisal-sheet capture</li><li>AA-backed fund confirmation</li><li>Queues</li></ul></td>
+            <td><ul><li>Offers (revamped)</li><li>BRL execution — Check Payment Status, ELR scheduling</li><li>ELR + TSV execution (incl. Cluster-Office staff)</li></ul></td>
+            <td><ul><li>New standalone appraisal module</li></ul></td>
+          </tr>
+          <tr>
+            <th>Admin<small>web · Loan Ops</small></th>
+            <td><ul><li>GL-visits refresh (5-path, loan-state-conflict)</li><li>Atlas queues</li></ul></td>
+            <td><ul><li>Offers (read-only view / filter / send)</li><li>BRL visit actions</li><li>BRL loan — payment-proof + AA approval</li></ul></td>
+            <td><ul><li>Appraisal admin surface</li></ul></td>
+          </tr>
+          <tr>
+            <th>Ringmaster<small>web · Calling team</small></th>
+            <td><ul><li>—</li></ul></td>
+            <td><ul><li>Offer creation surface (multi-lender toggle retained)</li></ul></td>
+            <td><ul><li>—</li></ul></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note"><b>Cross-cutting:</b> the AA SDK is <b>Finvu</b> (third-party) everywhere; <b>Mendix</b> handles Federal prechecks and appraisal-sheet validation; new BEAGLE surfaces move to the <b>Manrope</b> typeface. Federal is the launch lender — TPF / TCPL flows are largely unchanged (with an added option to attach an Oro valuation).</div>
+  </section>
+
+  <div class="foot">
+    <p class="mono">Source: BEAGLE — Branch-Led Gold Loan Execution (PRD v1.1, ENG-666) · Takeover Engine Revamp (PRD v1.2, ENG-1014) · Decoupled Appraisal (ENG-1233). Part of Project One.</p>
+    <p style="margin-top:10px">Screen-by-screen walkthroughs for each flow accompany this brief.</p>
+  </div>
+
+</div>
+</body>
+</html>

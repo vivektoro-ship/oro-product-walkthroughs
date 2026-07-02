@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#15110B">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Oro ELR — Releasing Your Gold</title>
+<style>
+/*__FONTS__*/
+
+:root{
+  /* dark warm-paper (c-meal palette, inverted) */
+  --paper:#15110B; --paper-deep:#1E1A13; --rule:#383026; --rule-soft:#2A241B;
+  --ink:#F4ECDD; --ink-soft:#C9BEA6; --ink-faded:#8C8069;
+  --gold:#E0A93D; --gold-soft:#C99A3A; --warning:#D2683F;
+  --serif-display:"Fraunces",Georgia,serif;
+  --serif-body:"Source Serif 4",Georgia,serif;
+  --didone:"Bodoni Moda","Didot",serif;
+  --mono:"JetBrains Mono","SF Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--paper);color-scheme:dark;-webkit-text-size-adjust:100%}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--serif-body);
+  font-weight:400;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  min-height:100vh;
+  overflow-x:hidden;
+  padding:46px 24px 72px;
+  background-image:
+    radial-gradient(circle at 18% 10%, rgba(224,169,61,.07), transparent 55%),
+    radial-gradient(circle at 88% 82%, rgba(224,169,61,.04), transparent 55%);
+  background-attachment:fixed;
+}
+.wrap{max-width:62rem;margin:0 auto}
+
+/* mono tracked label */
+.kicker{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.24em;
+  text-transform:uppercase;color:var(--gold)}
+
+/* ---------- masthead ---------- */
+.mast{text-align:center;margin-bottom:8px}
+.mast .kicker{color:var(--ink-faded)}
+.mast h1{font-family:var(--serif-display);font-weight:600;font-optical-sizing:auto;
+  font-size:clamp(34px,6vw,60px);line-height:1.02;letter-spacing:-.02em;
+  margin:14px 0 0;color:var(--ink)}
+.mast h1 em{font-style:italic;color:var(--gold)}
+.mast .dek{font-family:var(--serif-body);font-style:italic;font-size:clamp(15px,2vw,18px);
+  color:var(--ink-soft);margin-top:14px;max-width:38rem;margin-left:auto;margin-right:auto;line-height:1.5}
+
+/* ornamental rule */
+.orn{display:flex;align-items:center;justify-content:center;gap:14px;margin:26px auto 4px;max-width:30rem}
+.orn .ln{height:1px;background:var(--rule);flex:1}
+.orn .gl{font-family:var(--didone);font-size:18px;color:var(--gold);line-height:1}
+
+/* ---------- INDEX: platform groups + flow grid ---------- */
+.platform{margin-top:46px}
+.platform-head{display:flex;align-items:baseline;gap:14px;
+  border-bottom:1px solid var(--rule);padding-bottom:12px}
+.platform-head h2{font-family:var(--serif-display);font-weight:600;font-optical-sizing:auto;
+  font-size:clamp(21px,3vw,30px);letter-spacing:-.015em;color:var(--ink)}
+.platform-head .pkick{font-family:var(--mono);font-size:10px;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--gold)}
+.platform-head .pcount{font-family:var(--mono);font-size:10px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--ink-faded);margin-left:auto;white-space:nowrap}
+.flow-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr));
+  gap:16px;margin-top:20px}
+.flow-card{appearance:none;text-align:left;cursor:pointer;color:inherit;font:inherit;
+  background:var(--paper-deep);border:1px solid var(--rule);border-radius:5px;
+  padding:22px 20px 20px;display:flex;flex-direction:column;gap:12px;min-height:172px;
+  transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+.flow-card:hover{border-color:var(--gold);transform:translateY(-3px);
+  box-shadow:0 18px 40px -24px rgba(0,0,0,.8)}
+.flow-card:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.fc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.fc-num{font-family:var(--didone);font-weight:700;font-size:42px;line-height:.78;color:var(--gold);
+  font-feature-settings:"lnum" 1}
+.fc-arrow{font-family:var(--mono);font-size:16px;color:var(--ink-faded);padding-top:4px;transition:.18s}
+.flow-card:hover .fc-arrow{color:var(--gold);transform:translateX(3px)}
+.fc-name{font-family:var(--serif-display);font-weight:600;font-optical-sizing:auto;
+  font-size:21px;line-height:1.14;letter-spacing:-.012em;color:var(--ink)}
+.fc-blurb{font-family:var(--serif-body);font-size:13.5px;line-height:1.5;color:var(--ink-soft)}
+.fc-meta{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--ink-faded);margin-top:auto;display:flex;gap:10px;align-items:center}
+.fc-meta .dotsep{width:3px;height:3px;border-radius:50%;background:var(--rule);display:inline-block}
+
+/* ---------- FLOW VIEW ---------- */
+.backbar{display:flex;align-items:center;gap:14px;margin-bottom:18px;flex-wrap:wrap}
+.back{appearance:none;cursor:pointer;background:transparent;border:none;color:var(--ink-faded);
+  font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+  padding:6px 0;transition:.16s}
+.back:hover{color:var(--gold)}
+.backbar .flowname{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--ink-faded);border-left:1px solid var(--rule);padding-left:14px}
+.backbar .flowname b{color:var(--gold);font-weight:600}
+
+/* progress hairline */
+.pwrap{max-width:62rem;margin:8px auto 0}
+.pmeta{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.pmeta .l{font-family:var(--mono);font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-faded)}
+.pbar{height:2px;background:var(--rule-soft);position:relative;overflow:hidden}
+.pbar > i{position:absolute;left:0;top:0;bottom:0;background:var(--gold);transition:width .4s cubic-bezier(.4,0,.2,1)}
+
+/* editorial grid */
+.grid{display:grid;grid-template-columns:minmax(0,340px) 1fr;gap:clamp(28px,5vw,64px);
+  align-items:center;margin-top:34px;touch-action:pan-y}
+.phone-col{display:flex;justify-content:center}
+.phone{width:330px;max-width:86vw;background:var(--paper-deep);
+  border:1px solid var(--rule);border-radius:34px;padding:11px;
+  box-shadow:0 1px 0 rgba(255,255,255,.04) inset, 0 30px 60px -20px rgba(0,0,0,.65),
+    0 2px 10px rgba(0,0,0,.4)}
+.phone .notch{width:42%;height:5px;background:var(--rule);border-radius:99px;margin:3px auto 9px}
+.screen{position:relative;border-radius:24px;overflow:hidden;background:var(--paper);
+  border:1px solid var(--rule-soft);min-height:120px;display:flex;align-items:flex-start;justify-content:center}
+.screen img{display:block;width:100%;height:auto;opacity:0;transition:opacity .35s ease}
+.screen img.on{opacity:1}
+
+/* desktop browser-window frame */
+.browser{width:100%;max-width:820px;margin:0 auto;background:var(--paper-deep);
+  border:1px solid var(--rule);border-radius:11px;overflow:hidden;
+  box-shadow:0 1px 0 rgba(255,255,255,.04) inset, 0 30px 60px -20px rgba(0,0,0,.65), 0 2px 10px rgba(0,0,0,.4)}
+.browser .chrome{display:flex;align-items:center;gap:12px;padding:11px 14px;
+  border-bottom:1px solid var(--rule-soft);background:rgba(255,255,255,.02)}
+.browser .tl{display:flex;gap:7px}
+.browser .tl i{width:11px;height:11px;border-radius:50%;background:var(--rule);display:block}
+.browser .tl i:first-child{background:var(--warning);opacity:.7}
+.browser .addr{flex:1;font-family:var(--mono);font-size:10px;letter-spacing:.04em;color:var(--ink-faded);
+  background:var(--paper);border:1px solid var(--rule-soft);border-radius:6px;padding:5px 12px;
+  text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:60%}
+.bscreen{position:relative;background:var(--paper);min-height:120px}
+.bscreen img{display:block;width:100%;height:auto;cursor:zoom-in;opacity:0;transition:opacity .35s ease}
+.bscreen img.on{opacity:1}
+.bscreen .zoomhint{position:absolute;right:12px;bottom:12px;font-family:var(--mono);font-size:9px;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);background:rgba(21,17,11,.78);
+  border:1px solid var(--rule);border-radius:99px;padding:5px 11px;pointer-events:none}
+
+/* desktop layout: stack browser frame above the read column, shown BIG */
+.grid.g-desktop{grid-template-columns:1fr;gap:30px}
+.grid.g-desktop .read{max-width:46rem;margin:0 auto;width:100%}
+/* break the browser frame out of the narrow reading column: full-bleed lane,
+   centered on the viewport, with the frame shown wide + near 1:1 */
+.grid.g-desktop .phone-col{display:block;
+  width:100vw;margin-left:calc(50% - 50vw);
+  overflow-x:auto;-webkit-overflow-scrolling:touch}
+.grid.g-desktop .browser{width:min(96vw,1440px);max-width:none;min-width:1100px;margin:0 auto}
+
+/* full-screen zoom overlay for desktop screenshots */
+.zoom{position:fixed;inset:0;z-index:60;background:rgba(12,9,5,.95);display:none;
+  overflow:auto;-webkit-overflow-scrolling:touch;padding:54px 12px 28px;cursor:zoom-out}
+.zoom.on{display:block}
+.zoom img{display:block;width:100%;max-width:1920px;height:auto;margin:0 auto;
+  border:1px solid var(--rule);border-radius:6px}
+.zoom .zclose{position:fixed;top:12px;right:14px;z-index:61;appearance:none;cursor:pointer;
+  font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink);background:var(--paper-deep);border:1px solid var(--rule);border-radius:4px;padding:9px 14px}
+.zoom .zclose:hover{border-color:var(--gold);color:var(--gold)}
+
+.read{min-width:0}
+.fig{display:flex;align-items:flex-end;gap:14px;margin-bottom:14px}
+.fig .num{font-family:var(--didone);font-weight:700;font-size:64px;line-height:.8;color:var(--ink);
+  font-feature-settings:"lnum" 1}
+.fig .of{font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:var(--ink-faded);
+  text-transform:uppercase;padding-bottom:7px}
+.read .step-label{margin-bottom:12px}
+.read h2{font-family:var(--serif-display);font-optical-sizing:auto;font-weight:600;
+  font-size:clamp(24px,3.4vw,34px);line-height:1.08;letter-spacing:-.015em;color:var(--ink);margin-bottom:14px}
+.read .cap{font-family:var(--serif-body);font-size:17px;line-height:1.62;color:var(--ink-soft);max-width:30rem}
+
+.controls{display:flex;align-items:center;gap:12px;margin-top:30px;flex-wrap:wrap}
+button.nav{appearance:none;cursor:pointer;font-family:var(--mono);font-weight:600;
+  font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+  padding:13px 22px;border-radius:2px;border:1px solid var(--ink);background:transparent;color:var(--ink);
+  transition:.18s}
+button.nav:hover:not(:disabled){background:var(--ink);color:var(--paper)}
+button.nav.primary{background:var(--gold);border-color:var(--gold);color:var(--paper)}
+button.nav.primary:hover:not(:disabled){background:var(--ink);border-color:var(--ink)}
+button.nav:disabled{opacity:.28;cursor:not-allowed}
+
+.dots{display:flex;gap:0;margin-top:30px;border-top:1px solid var(--rule);padding-top:16px;flex-wrap:wrap}
+.dot{appearance:none;cursor:pointer;background:transparent;border:none;padding:7px 11px 7px 0;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink-faded);transition:.16s;border-bottom:2px solid transparent;margin-bottom:-1px}
+.dot:hover{color:var(--ink)}
+.dot.active{color:var(--gold);border-bottom-color:var(--gold)}
+.dot.done{color:var(--ink-soft)}
+
+.foot{max-width:62rem;margin:42px auto 0;border-top:1px solid var(--rule);padding-top:14px;
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.foot span{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faded)}
+.foot kbd{font-family:var(--mono);background:var(--paper-deep);border:1px solid var(--rule);
+  border-radius:3px;padding:1px 6px;font-size:10px;color:var(--ink-soft)}
+
+.hidden{display:none !important}
+
+/* ---------- mobile ---------- */
+@media(max-width:760px){
+  body{padding:30px 18px calc(96px + env(safe-area-inset-bottom))}
+  .mast h1{margin-top:10px}
+  .orn{margin:20px auto 4px}
+  .platform{margin-top:34px}
+  .flow-grid{margin-top:16px;gap:12px}
+  .pwrap{margin-top:6px}
+  .grid{grid-template-columns:1fr;gap:24px;margin-top:24px}
+  .phone{width:300px}
+  .read{text-align:center}
+  .fig{justify-content:center}
+  .read .cap{margin-left:auto;margin-right:auto}
+  /* nav becomes a fixed, thumb-reachable bar (flow view only) */
+  #flowView .controls{position:fixed;left:0;right:0;bottom:0;z-index:20;margin:0;gap:0;
+    background:linear-gradient(to top,var(--paper) 72%,rgba(21,17,11,0));
+    padding:14px 18px calc(14px + env(safe-area-inset-bottom));
+    border-top:1px solid var(--rule)}
+  #flowView button.nav{flex:1;padding:16px 18px;font-size:12px;border-radius:6px}
+  .dots{justify-content:center}
+  .dot{padding:9px 9px;font-size:12px}
+  .foot{margin-top:30px;justify-content:center;text-align:center;gap:6px}
+}
+@media(max-width:380px){ .phone{width:88vw} .fig .num{font-size:54px} }
+@media(prefers-reduced-motion:reduce){
+  .screen img{transition:none}
+  .flow-card{transition:none}
+  .pbar > i{transition:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ INDEX VIEW ============ -->
+<div class="wrap" id="indexView">
+  <div class="mast">
+    <div class="kicker">Oro &nbsp;·&nbsp; Takeover &nbsp;·&nbsp; Customer App</div>
+    <h1>Your <em>Gold Release</em>, Tracked</h1>
+    <p class="dek">When a gold loan moves to Oro, the gold is released from the old lender, kept safe, and brought back — what the customer follows, and what the partner does to make it happen. Pick a flow to begin.</p>
+    <div class="orn"><span class="ln"></span><span class="gl">&sect;</span><span class="ln"></span></div>
+  </div>
+
+  <div id="deckGroups"></div>
+
+  <div class="foot">
+    <span id="indexFoot">Oro ELR</span>
+    <span>Tap a flow to begin</span>
+  </div>
+</div>
+
+<!-- ============ FLOW (step-through) VIEW ============ -->
+<div class="wrap hidden" id="flowView">
+  <div class="backbar">
+    <button class="back" id="backBtn">&larr; All flows</button>
+    <span class="flowname" id="flowName"></span>
+  </div>
+
+  <div class="pwrap">
+    <div class="pmeta">
+      <span class="l" id="pl-left">Step 01 / 08</span>
+      <span class="l" id="pl-right">Takeover offer</span>
+    </div>
+    <div class="pbar"><i id="pbar"></i></div>
+  </div>
+
+  <div class="grid" id="grid">
+    <div class="phone-col">
+      <div class="phone" id="phoneFrame">
+        <div class="notch"></div>
+        <div class="screen"><img id="shot" alt=""></div>
+      </div>
+      <div class="browser hidden" id="browserFrame">
+        <div class="chrome"><span class="tl"><i></i><i></i><i></i></span><span class="addr" id="baddr">admin.oro.app</span></div>
+        <div class="bscreen"><img id="bshot" alt=""><span class="zoomhint">Tap to zoom</span></div>
+      </div>
+    </div>
+
+    <div class="read">
+      <div class="fig"><span class="num" id="fignum">01</span><span class="of" id="figof">/ 08</span></div>
+      <div class="kicker step-label" id="steplabel">Step 01</div>
+      <h2 id="title"></h2>
+      <p class="cap" id="caption"></p>
+
+      <div class="controls">
+        <button class="nav" id="prev">&larr; Back</button>
+        <button class="nav primary" id="next">Next &rarr;</button>
+      </div>
+
+      <div class="dots" id="dots"></div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <span id="flowFoot">Flow</span>
+    <span>Swipe, tap the buttons, or use&nbsp;<kbd>&larr;</kbd>&nbsp;<kbd>&rarr;</kbd></span>
+  </div>
+</div>
+
+<!-- full-screen zoom for desktop screenshots -->
+<div class="zoom" id="zoom"><button class="zclose" id="zclose">✕ Close</button><img id="zimg" alt=""></div>
+
+<script>
+  // ---- Data-driven: PLATFORM -> FLOWS -> steps. Add a platform, flow, or screen by editing this. ----
+  const DECK = __DECK__;
+
+  const $ = id => document.getElementById(id);
+  const pad = n => String(n).padStart(2,'0');
+  const indexView = $('indexView'), flowView = $('flowView');
+  const shot=$('shot'), title=$('title'), caption=$('caption'), prev=$('prev'), next=$('next'),
+        dots=$('dots'), pbar=$('pbar'), fignum=$('fignum'), figof=$('figof'),
+        steplabel=$('steplabel'), plLeft=$('pl-left'), plRight=$('pl-right'),
+        flowName=$('flowName'), flowFoot=$('flowFoot'),
+        grid=$('grid'), phoneFrame=$('phoneFrame'), browserFrame=$('browserFrame'),
+        bshot=$('bshot'), baddr=$('baddr'), zoom=$('zoom'), zimg=$('zimg'), zclose=$('zclose');
+
+  const isDesktop = fl => !!fl && fl._viewport === 'desktop';
+
+  // flat lookup for routing; remember each flow's platform for the header line
+  const ALL_FLOWS = [];
+  DECK.forEach(p => p.flows.forEach(fl => { fl._platform = p.platform; fl._viewport = p.viewport || 'mobile'; ALL_FLOWS.push(fl); }));
+  const findFlow = slug => ALL_FLOWS.find(f => f.slug === slug);
+
+  // ---------- build index (two platform groups) ----------
+  const deckGroups = $('deckGroups');
+  let totalScreens = 0;
+  DECK.forEach(p => {
+    const groupScreens = p.flows.reduce((a,f)=>a+f.steps.length,0);
+    totalScreens += groupScreens;
+    const sec = document.createElement('section');
+    sec.className = 'platform';
+    const head = document.createElement('div');
+    head.className = 'platform-head';
+    head.innerHTML = '<span class="pkick">' + p.kicker + '</span>'
+      + '<h2></h2>'
+      + '<span class="pcount">' + p.flows.length + ' flows · ' + groupScreens + ' screens</span>';
+    head.querySelector('h2').textContent = p.platform;
+    sec.appendChild(head);
+    const g = document.createElement('div');
+    g.className = 'flow-grid';
+    p.flows.forEach((fl, idx) => {
+      const card = document.createElement('button');
+      card.className = 'flow-card';
+      card.setAttribute('aria-label', fl.name + ', ' + fl.steps.length + ' screens');
+      const n = fl.steps.length;
+      card.innerHTML =
+        '<div class="fc-top"><span class="fc-num">'+pad(idx+1)+'</span><span class="fc-arrow">&rarr;</span></div>'
+        + '<div class="fc-name"></div>'
+        + '<div class="fc-blurb"></div>'
+        + '<div class="fc-meta"><span>'+fl.kicker+'</span><span class="dotsep"></span><span>'+n+' screen'+(n===1?'':'s')+'</span></div>';
+      card.querySelector('.fc-name').textContent = fl.name;
+      card.querySelector('.fc-blurb').textContent = fl.blurb;
+      card.addEventListener('click', () => { location.hash = '#' + fl.slug; });
+      g.appendChild(card);
+    });
+    sec.appendChild(g);
+    deckGroups.appendChild(sec);
+  });
+  $('indexFoot').textContent = DECK.length + ' apps · ' + ALL_FLOWS.length + ' flows · ' + totalScreens + ' screens';
+
+  // ---------- step-through state ----------
+  let curFlow = null;
+  let i = 0;
+
+  function buildDots(fl){
+    dots.innerHTML = '';
+    fl.steps.forEach((s, idx) => {
+      const d = document.createElement('button');
+      d.className = 'dot';
+      d.textContent = pad(idx+1);
+      d.setAttribute('aria-label', 'Go to screen ' + (idx+1) + ': ' + s.title);
+      d.addEventListener('click', () => setStep(idx));
+      dots.appendChild(d);
+    });
+  }
+  function renderFlowChrome(fl){
+    figof.textContent = '/ ' + pad(fl.steps.length);
+    plRight.textContent = fl.kicker;
+    flowName.innerHTML = '<b>' + fl._platform + '</b> &nbsp;·&nbsp; ' + fl.name;
+    flowFoot.textContent = fl._platform + ' · ' + fl.name;
+    // pick the frame for this flow's viewport
+    const desk = isDesktop(fl);
+    grid.classList.toggle('g-desktop', desk);
+    grid.classList.toggle('g-mobile', !desk);
+    phoneFrame.classList.toggle('hidden', desk);
+    browserFrame.classList.toggle('hidden', !desk);
+    if (desk) baddr.textContent = /ringmaster/i.test(fl._platform) ? 'ringmaster.oro.app' : 'admin.oro.app';
+    buildDots(fl);
+  }
+  function renderStep(){
+    const fl = curFlow, total = fl.steps.length, s = fl.steps[i];
+    const desk = isDesktop(fl);
+    const imgEl = desk ? bshot : shot;
+    imgEl.classList.remove('on');
+    const tmp = new Image();
+    const show = () => { imgEl.src=s.img; imgEl.alt=s.title; requestAnimationFrame(()=>imgEl.classList.add('on')); };
+    tmp.onload = show; tmp.src = s.img; if (tmp.complete) show();
+
+    fignum.textContent = pad(i+1);
+    steplabel.textContent = 'Screen ' + pad(i+1);
+    title.textContent = s.title;
+    caption.textContent = s.caption;
+    plLeft.textContent = 'Screen ' + pad(i+1) + ' / ' + pad(total);
+    prev.disabled = (i===0);
+    next.disabled = (i===total-1);
+    pbar.style.width = (((i+1)/total)*100) + '%';
+    [...dots.children].forEach((d,idx)=>{
+      d.classList.toggle('active', idx===i);
+      d.classList.toggle('done', idx<i);
+    });
+  }
+
+  function stepHash(slug, idx){ return '#' + slug + (idx>0 ? '/' + (idx+1) : ''); }
+  function setStep(n){
+    const total = curFlow.steps.length;
+    location.hash = stepHash(curFlow.slug, Math.max(0, Math.min(total-1, n)));
+  }
+
+  // ---------- views ----------
+  function showIndex(){
+    flowView.classList.add('hidden');
+    indexView.classList.remove('hidden');
+    curFlow = null;
+    window.scrollTo(0,0);
+  }
+  function showFlow(fl, step){
+    indexView.classList.add('hidden');
+    flowView.classList.remove('hidden');
+    if (curFlow !== fl){ curFlow = fl; renderFlowChrome(fl); window.scrollTo(0,0); }
+    i = step;
+    renderStep();
+  }
+
+  // ---------- routing ----------
+  function route(){
+    const h = (location.hash || '').replace(/^#/, '');
+    if (!h){ showIndex(); return; }
+    const parts = h.split('/');
+    const fl = findFlow(parts[0]);
+    if (!fl){ showIndex(); return; }
+    let step = parseInt(parts[1] || '1', 10);
+    if (isNaN(step) || step < 1) step = 1;
+    step = Math.min(step, fl.steps.length) - 1;
+    showFlow(fl, step);
+  }
+  window.addEventListener('hashchange', route);
+
+  // ---------- controls ----------
+  $('backBtn').addEventListener('click', () => { location.hash = '#'; });
+  prev.addEventListener('click', ()=>setStep(i-1));
+  next.addEventListener('click', ()=>setStep(i+1));
+  document.addEventListener('keydown', e=>{
+    if (curFlow === null || zoom.classList.contains('on')) return;
+    if (e.key==='ArrowRight') setStep(i+1);
+    else if (e.key==='ArrowLeft') setStep(i-1);
+  });
+
+  // swipe (touch), scoped to the step-through grid
+  const swipe = flowView.querySelector('.grid');
+  let sx=null, sy=null;
+  swipe.addEventListener('touchstart', e=>{ const t=e.changedTouches[0]; sx=t.clientX; sy=t.clientY; }, {passive:true});
+  swipe.addEventListener('touchend', e=>{
+    if(sx===null || curFlow===null) return;
+    const t=e.changedTouches[0], dx=t.clientX-sx, dy=t.clientY-sy;
+    if(Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)*1.4){ setStep(dx<0 ? i+1 : i-1); }
+    sx=sy=null;
+  }, {passive:true});
+
+  // tap/click-to-zoom for desktop screenshots
+  function openZoom(){
+    if (!isDesktop(curFlow)) return;
+    zimg.src = curFlow.steps[i].img; zimg.alt = curFlow.steps[i].title;
+    zoom.classList.add('on'); zoom.scrollTop = 0;
+  }
+  function closeZoom(){ zoom.classList.remove('on'); zimg.src=''; }
+  bshot.addEventListener('click', openZoom);
+  zoom.addEventListener('click', e => { if (e.target !== zimg) closeZoom(); });
+  zclose.addEventListener('click', closeZoom);
+  document.addEventListener('keydown', e => { if (e.key==='Escape' && zoom.classList.contains('on')) closeZoom(); });
+
+  route();
+</script>
+</body>
+</html>
