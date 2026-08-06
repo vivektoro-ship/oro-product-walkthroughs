@@ -115,13 +115,10 @@ FLOWS = [
   },
 ]
 
-# A personal loan is never standalone — it is attached to a gold loan and only
-# offered once that loan has disbursed. So these cards live inside the Beagle
-# customer journey, immediately after Fund Transfer, rather than as a product
-# of their own.
-HOST_PRODUCT = "Beagle revamp"
-HOST_PLATFORM = "Customer App"
-INSERT_AFTER = "Fund Transfer"
+# PL is its own product card, placed straight after Beagle because a personal
+# loan is only offered on top of a disbursed gold loan. Two sections inside it:
+# User App and Admin.
+AFTER_PRODUCT = "Beagle revamp"
 SLUG_PREFIX = "cx-pl-"
 
 E2E_FLOW = {
@@ -129,9 +126,76 @@ E2E_FLOW = {
     "blurb": "The whole personal loan in one run, from the offer on your gold loan to the money landing.",
 }
 
+USER_META = {
+    "platform": "Customer App",
+    "kicker": "Personal loan · added to your gold loan",
+    "viewport": "mobile",
+    "_product": PRODUCT,
+    "_appType": "User App",
+}
 
-def png_bytes(fn):
-    path = os.path.join(ASSETS, fn)
+# Desktop screens follow the deck's ~2048px convention, not the 2x phone rule.
+ADMIN_ASSETS = os.path.join(HOME, "assets/pl-admin")
+ADMIN_META = {
+    "platform": "Admin",
+    "kicker": "Personal loan · how Ops triggers and approves it",
+    "viewport": "desktop",
+    "_product": PRODUCT,
+    "_appType": "Admin",
+}
+ADMIN_FLOWS = [
+  {
+    "name": "Trigger the personal loan", "slug": "cx-pl-ad-trigger", "kicker": "Trigger",
+    "blurb": "Recommend a personal loan to the customer on top of their gold loan.",
+    "steps": [
+      ("ad01-2457-27680.png", "See the triggered plan",
+       "The banner confirms a personal loan recommendation went out. Click View Trigger for "
+       "the lender, branch, plan, rate and amount."),
+      ("ad02-2457-27932.png", "Trigger a personal loan",
+       "Pick the lender, branch and plan, set the rate and the amount, then Confirm & Trigger."),
+      ("ad03-2457-27479.png", "Approval is pending",
+       "The loan has to be approved inside the window shown. The countdown and a quick check "
+       "sit on the record."),
+      ("ad04-2457-28201.png", "Open the approval",
+       "Once the customer's side is done, Approve Personal Loan appears on the loan."),
+    ],
+  },
+  {
+    "name": "Check and approve", "slug": "cx-pl-ad-approve", "kicker": "Approval",
+    "blurb": "The customer check, the approval, and what blocks it.",
+    "steps": [
+      ("ad05-2457-28441.png", "Run the customer check",
+       "Step one validates the customer type, their name and date of birth, their PAN and the "
+       "Oro approval. Steps two and three unlock once it passes."),
+      ("ad06-2457-28812.png", "Amount above the limit",
+       "If the amount goes over the approved loan, the field flags it and Approve Personal "
+       "Loan stays off."),
+      ("ad07-2457-28592.png", "Check the approval details",
+       "Confirm the lender, branch, plan, rate, amount and payout account, then click "
+       "Approve Personal Loan."),
+      ("ad08-2457-29033.png", "Confirm the approval",
+       "A last prompt shows the amount before it commits. Click Approve."),
+      ("ad09-2457-29203.png", "Personal loan approved",
+       "The approval lands and the record moves on. Click Done."),
+    ],
+  },
+  {
+    "name": "Fund transfer and close", "slug": "cx-pl-ad-fund", "kicker": "Funds",
+    "blurb": "Both loans on one record, through to the money moving and the mismatch clearing.",
+    "steps": [
+      ("ad10-2457-29361.png", "Both loans on the record",
+       "The gold loan and the personal loan sit side by side with their amounts and status."),
+      ("ad11-2457-29593.png", "Fund transfer pending",
+       "The personal loan shows as pending fund transfer, with any mismatch flagged against it."),
+      ("ad12-2457-29825.png", "The funds are transferred",
+       "The transfer record carries the amount, the reference number, the date and the mode."),
+      ("ad13-2457-30051.png", "Gold and personal loan active",
+       "Both loans are active and no mismatch is left on the record."),
+    ],
+  },
+]
+
+def png_bytes(path):
     if not COMPRESS:
         with open(path, "rb") as fp:
             return fp.read()
@@ -146,23 +210,34 @@ def png_bytes(fn):
 _CACHE = {}
 
 
-def datauri(fn):
-    if fn not in _CACHE:
-        _CACHE[fn] = "data:image/png;base64," + base64.b64encode(png_bytes(fn)).decode("ascii")
-    return _CACHE[fn]
+def datauri_from(dirpath, fn):
+    key = dirpath + "/" + fn
+    if key not in _CACHE:
+        _CACHE[key] = "data:image/png;base64," + base64.b64encode(
+            png_bytes(os.path.join(dirpath, fn))).decode("ascii")
+    return _CACHE[key]
 
 
-def build_flows():
-    """The three PL cards plus the single-shot run, as flows (not a group)."""
-    flows, run = [], []
-    for fl in FLOWS:
-        steps = [{"img": datauri(fn), "title": t, "caption": c} for fn, t, c in fl["steps"]]
-        flows.append({"name": fl["name"], "slug": fl["slug"], "kicker": fl["kicker"],
-                      "blurb": fl["blurb"], "steps": steps})
+def mk_flows(spec, dirpath):
+    out, run = [], []
+    for fl in spec:
+        steps = [{"img": datauri_from(dirpath, fn), "title": t, "caption": c}
+                 for fn, t, c in fl["steps"]]
+        out.append({"name": fl["name"], "slug": fl["slug"], "kicker": fl["kicker"],
+                    "blurb": fl["blurb"], "steps": steps})
         run.extend(steps)
+    return out, run
+
+
+def build_groups():
+    user_flows, run = mk_flows(FLOWS, ASSETS)
     ef = dict(E2E_FLOW); ef["steps"] = run
-    flows.append(ef)
-    return flows
+    user_flows.append(ef)
+    user = dict(USER_META); user["flows"] = user_flows
+
+    admin_flows, _ = mk_flows(ADMIN_FLOWS, ADMIN_ASSETS)
+    admin = dict(ADMIN_META); admin["flows"] = admin_flows
+    return user, admin
 
 
 def deck_bounds(html):
@@ -179,43 +254,60 @@ def deck_bounds(html):
     raise SystemExit("unterminated DECK array")
 
 
-def inject(path, pl_flows):
+def inject(path, groups):
     html = open(path, encoding="utf-8").read()
     b, e = deck_bounds(html)
     deck = json.loads(html[b:e + 1])
 
-    # idempotent: drop any standalone PL product group from an earlier run,
-    # and strip previously-inserted PL flows from wherever they landed
+    # idempotent: drop our own groups, and any PL flows a previous run pushed
+    # into someone else's group
     deck = [g for g in deck if g.get("_product") != PRODUCT]
     for g in deck:
         g["flows"] = [f for f in g["flows"] if not f["slug"].startswith(SLUG_PREFIX)]
+    deck = [g for g in deck if g["flows"]]
 
-    host = next((g for g in deck
-                 if g.get("_product") == HOST_PRODUCT and g.get("platform") == HOST_PLATFORM), None)
-    if host is None:
-        raise SystemExit("STOP - host group %s / %s not found" % (HOST_PRODUCT, HOST_PLATFORM))
-    names = [f["name"] for f in host["flows"]]
-    if INSERT_AFTER not in names:
-        raise SystemExit("STOP - no '%s' flow in the host group; found %s" % (INSERT_AFTER, names))
-    at = names.index(INSERT_AFTER) + 1
-    host["flows"][at:at] = pl_flows
+    # Landing-page product order follows first appearance, so insert after the
+    # FIRST contiguous run of Beagle groups. Going after the last one would put
+    # PL behind Takeover, because the Beagle end-to-end group sits near the end.
+    first = next((i for i, g in enumerate(deck) if g.get("_product") == AFTER_PRODUCT), None)
+    if first is None:
+        raise SystemExit("STOP - no %s groups to sit after" % AFTER_PRODUCT)
+    at = first
+    while at < len(deck) and deck[at].get("_product") == AFTER_PRODUCT:
+        at += 1
+    deck[at:at] = list(groups)
 
     new_html = html[:b] + json.dumps(deck, ensure_ascii=True) + html[e + 1:]
     open(path, "w", encoding="utf-8").write(new_html)
-    return deck, host, at, len(new_html)
+    return deck, at, len(new_html)
+
+
+def apptypes(path):
+    """Only offer sections the deck's landing page actually renders."""
+    html = open(path, encoding="utf-8").read()
+    import re
+    m = re.search(r"var APPTYPES=\[([^\]]*)\]", html)
+    return re.findall(r"'([^']+)'", m.group(1)) if m else []
 
 
 if __name__ == "__main__":
-    pl_flows = build_flows()
-    added = sum(len(f["steps"]) for f in pl_flows)
+    user, admin = build_groups()
     for path in DECKS:
-        deck, host, at, nbytes = inject(path, pl_flows)
+        allowed = apptypes(path)
+        groups = [g for g in (user, admin) if g["_appType"] in allowed]
+        skipped = [g["_appType"] for g in (user, admin) if g["_appType"] not in allowed]
+        deck, at, nbytes = inject(path, groups)
         total = sum(len(f["steps"]) for g in deck for f in g["flows"])
         print("\n%s" % os.path.basename(path))
-        print("  inserted %d PL flows (%d screens) into %s / %s at position %d"
-              % (len(pl_flows), added, HOST_PRODUCT, HOST_PLATFORM, at + 1))
-        print("  %.1f MB | %d screens in deck" % (nbytes / 1024 / 1024, total))
-        print("  == %s · %s == now %d flows:" % (HOST_PRODUCT, HOST_PLATFORM, len(host["flows"])))
-        for i, f in enumerate(host["flows"], 1):
-            mark = "  <- new" if f["slug"].startswith(SLUG_PREFIX) else ""
-            print("     %2d. %-30s %3d  [%s]%s" % (i, f["name"], len(f["steps"]), f["slug"], mark))
+        print("  landing page renders: %s" % ", ".join(allowed))
+        if skipped:
+            print("  SKIPPED (would not render here): %s" % ", ".join(skipped))
+        print("  inserted %d group(s) at deck position %d | %.1f MB | %d screens"
+              % (len(groups), at + 1, nbytes / 1024 / 1024, total))
+        for g in groups:
+            print("  == %s · %s == (%d flows, %d screens)"
+                  % (PRODUCT, g["_appType"], len(g["flows"]),
+                     sum(len(f["steps"]) for f in g["flows"])))
+            for f in g["flows"]:
+                print("     %-30s %3d  [%s]" % (f["name"], len(f["steps"]), f["slug"]))
+        print("  product order: %s" % " | ".join(dict.fromkeys(g["_product"] for g in deck)))
