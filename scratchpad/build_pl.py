@@ -115,22 +115,17 @@ FLOWS = [
   },
 ]
 
-GROUP_META = {
-    "platform": "Customer App",
-    "kicker": "Personal loan · added to your gold loan",
-    "viewport": "mobile",
-    "_product": PRODUCT,
-    "_appType": "User App",
-}
-E2E_META = {
-    "platform": "Personal Loan — End to end",
-    "kicker": "Universal · single shot",
-    "viewport": "mobile",
-    "_product": PRODUCT,
-    "_appType": "Universal",
-}
+# A personal loan is never standalone — it is attached to a gold loan and only
+# offered once that loan has disbursed. So these cards live inside the Beagle
+# customer journey, immediately after Fund Transfer, rather than as a product
+# of their own.
+HOST_PRODUCT = "Beagle revamp"
+HOST_PLATFORM = "Customer App"
+INSERT_AFTER = "Fund Transfer"
+SLUG_PREFIX = "cx-pl-"
+
 E2E_FLOW = {
-    "name": "End to end flow", "slug": "cx-pl-e2e", "kicker": "Universal · single shot",
+    "name": "Personal loan, end to end", "slug": "cx-pl-e2e", "kicker": "Single shot",
     "blurb": "The whole personal loan in one run, from the offer on your gold loan to the money landing.",
 }
 
@@ -157,18 +152,17 @@ def datauri(fn):
     return _CACHE[fn]
 
 
-def build_groups():
+def build_flows():
+    """The three PL cards plus the single-shot run, as flows (not a group)."""
     flows, run = [], []
     for fl in FLOWS:
         steps = [{"img": datauri(fn), "title": t, "caption": c} for fn, t, c in fl["steps"]]
         flows.append({"name": fl["name"], "slug": fl["slug"], "kicker": fl["kicker"],
                       "blurb": fl["blurb"], "steps": steps})
         run.extend(steps)
-    g = dict(GROUP_META); g["flows"] = flows
-    e2e = dict(E2E_META)
     ef = dict(E2E_FLOW); ef["steps"] = run
-    e2e["flows"] = [ef]
-    return g, e2e
+    flows.append(ef)
+    return flows
 
 
 def deck_bounds(html):
@@ -185,31 +179,43 @@ def deck_bounds(html):
     raise SystemExit("unterminated DECK array")
 
 
-def inject(path, groups):
+def inject(path, pl_flows):
     html = open(path, encoding="utf-8").read()
     b, e = deck_bounds(html)
     deck = json.loads(html[b:e + 1])
-    before = len(deck)
+
+    # idempotent: drop any standalone PL product group from an earlier run,
+    # and strip previously-inserted PL flows from wherever they landed
     deck = [g for g in deck if g.get("_product") != PRODUCT]
-    replaced = before != len(deck)
-    deck.extend(groups)
+    for g in deck:
+        g["flows"] = [f for f in g["flows"] if not f["slug"].startswith(SLUG_PREFIX)]
+
+    host = next((g for g in deck
+                 if g.get("_product") == HOST_PRODUCT and g.get("platform") == HOST_PLATFORM), None)
+    if host is None:
+        raise SystemExit("STOP - host group %s / %s not found" % (HOST_PRODUCT, HOST_PLATFORM))
+    names = [f["name"] for f in host["flows"]]
+    if INSERT_AFTER not in names:
+        raise SystemExit("STOP - no '%s' flow in the host group; found %s" % (INSERT_AFTER, names))
+    at = names.index(INSERT_AFTER) + 1
+    host["flows"][at:at] = pl_flows
+
     new_html = html[:b] + json.dumps(deck, ensure_ascii=True) + html[e + 1:]
     open(path, "w", encoding="utf-8").write(new_html)
-    return deck, replaced, len(new_html)
+    return deck, host, at, len(new_html)
 
 
 if __name__ == "__main__":
-    groups = build_groups()
-    added = sum(len(f["steps"]) for g in groups for f in g["flows"])
+    pl_flows = build_flows()
+    added = sum(len(f["steps"]) for f in pl_flows)
     for path in DECKS:
-        deck, replaced, nbytes = inject(path, groups)
+        deck, host, at, nbytes = inject(path, pl_flows)
         total = sum(len(f["steps"]) for g in deck for f in g["flows"])
         print("\n%s" % os.path.basename(path))
-        print("  %s %s groups | %.1f MB | %d screens in deck"
-              % ("replaced" if replaced else "added", PRODUCT, nbytes / 1024 / 1024, total))
-        for g in groups:
-            print("  == %s == (%d flows, %d screens)"
-                  % (g["kicker"], len(g["flows"]), sum(len(f["steps"]) for f in g["flows"])))
-            for f in g["flows"]:
-                print("     %-30s %2d  [%s]" % (f["name"], len(f["steps"]), f["slug"]))
-        print("  added by this script: %d screens" % added)
+        print("  inserted %d PL flows (%d screens) into %s / %s at position %d"
+              % (len(pl_flows), added, HOST_PRODUCT, HOST_PLATFORM, at + 1))
+        print("  %.1f MB | %d screens in deck" % (nbytes / 1024 / 1024, total))
+        print("  == %s · %s == now %d flows:" % (HOST_PRODUCT, HOST_PLATFORM, len(host["flows"])))
+        for i, f in enumerate(host["flows"], 1):
+            mark = "  <- new" if f["slug"].startswith(SLUG_PREFIX) else ""
+            print("     %2d. %-30s %3d  [%s]%s" % (i, f["name"], len(f["steps"]), f["slug"], mark))
