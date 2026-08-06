@@ -121,10 +121,17 @@ FLOWS = [
 AFTER_PRODUCT = "Beagle revamp"
 SLUG_PREFIX = "cx-pl-"
 
-E2E_FLOW = {
-    "name": "Personal loan, end to end", "slug": "cx-pl-e2e", "kicker": "Single shot",
-    "blurb": "The whole personal loan in one run, from the offer on your gold loan to the money landing.",
+# The whole run also sits inside the Beagle customer journey as one card, right
+# after Fund Transfer, which is where the offer actually appears. It lives there
+# rather than in the Personal Loan group so the screens are embedded twice in
+# total, not three times.
+HOST_PLATFORM = "Customer App"
+INSERT_AFTER = "Fund Transfer"
+HOST_FLOW = {
+    "name": "Personal Loan", "slug": "bg-cx-pl", "kicker": "Beagle · gold loan journey",
+    "blurb": "Once your gold loan money lands, you can add a personal loan on top of it.",
 }
+HOST_SLUG = HOST_FLOW["slug"]
 
 USER_META = {
     "platform": "Customer App",
@@ -231,13 +238,13 @@ def mk_flows(spec, dirpath):
 
 def build_groups():
     user_flows, run = mk_flows(FLOWS, ASSETS)
-    ef = dict(E2E_FLOW); ef["steps"] = run
-    user_flows.append(ef)
     user = dict(USER_META); user["flows"] = user_flows
 
     admin_flows, _ = mk_flows(ADMIN_FLOWS, ADMIN_ASSETS)
     admin = dict(ADMIN_META); admin["flows"] = admin_flows
-    return user, admin
+
+    host = dict(HOST_FLOW); host["steps"] = run     # same 31 screens, one card
+    return user, admin, host
 
 
 def deck_bounds(html):
@@ -263,7 +270,8 @@ def inject(path, groups):
     # into someone else's group
     deck = [g for g in deck if g.get("_product") != PRODUCT]
     for g in deck:
-        g["flows"] = [f for f in g["flows"] if not f["slug"].startswith(SLUG_PREFIX)]
+        g["flows"] = [f for f in g["flows"]
+                      if not f["slug"].startswith(SLUG_PREFIX) and f["slug"] != HOST_SLUG]
     deck = [g for g in deck if g["flows"]]
 
     # Landing-page product order follows first appearance, so insert after the
@@ -290,13 +298,38 @@ def apptypes(path):
     return re.findall(r"'([^']+)'", m.group(1)) if m else []
 
 
+def insert_host_flow(deck, host):
+    """Drop the single PL card into Beagle > Customer App after Fund Transfer."""
+    g = next((g for g in deck if g.get("_product") == AFTER_PRODUCT
+              and g.get("platform") == HOST_PLATFORM), None)
+    if g is None:
+        raise SystemExit("STOP - no %s / %s group" % (AFTER_PRODUCT, HOST_PLATFORM))
+    names = [f["name"] for f in g["flows"]]
+    if INSERT_AFTER not in names:
+        raise SystemExit("STOP - no '%s' card; found %s" % (INSERT_AFTER, names))
+    at = names.index(INSERT_AFTER) + 1
+    g["flows"].insert(at, host)
+    return g, at
+
+
 if __name__ == "__main__":
-    user, admin = build_groups()
+    user, admin, host = build_groups()
     for path in DECKS:
         allowed = apptypes(path)
         groups = [g for g in (user, admin) if g["_appType"] in allowed]
         skipped = [g["_appType"] for g in (user, admin) if g["_appType"] not in allowed]
         deck, at, nbytes = inject(path, groups)
+        hg, hat = insert_host_flow(deck, host)
+        # rewrite with the host flow included
+        html = open(path, encoding="utf-8").read()
+        b, e = deck_bounds(html)
+        html = html[:b] + json.dumps(deck, ensure_ascii=True) + html[e + 1:]
+        open(path, "w", encoding="utf-8").write(html)
+        nbytes = len(html)
+        print("\n  Beagle · Customer App now:")
+        for i, f in enumerate(hg["flows"], 1):
+            print("     %2d. %-24s %3d  [%s]%s" % (i, f["name"], len(f["steps"]), f["slug"],
+                  "  <- new" if f["slug"] == HOST_SLUG else ""))
         total = sum(len(f["steps"]) for g in deck for f in g["flows"])
         print("\n%s" % os.path.basename(path))
         print("  landing page renders: %s" % ", ".join(allowed))
