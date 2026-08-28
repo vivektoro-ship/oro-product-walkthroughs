@@ -27,7 +27,7 @@
     --body:'Manrope',system-ui,-apple-system,sans-serif;
     --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,monospace;
 
-    --page-max:1200px;
+    --page-max:1320px;
     --phone-w:330px;
     --radius:14px;
   }
@@ -156,7 +156,7 @@
 
   /* phone */
   .phone{
-    height:min(58vh,620px);
+    height:min(74vh,860px);
     width:auto;
     max-width:100%;
     aspect-ratio:390/844;
@@ -175,8 +175,8 @@
 
   /* browser */
   .browser{
-    width:min(100%,620px);
-    max-height:min(58vh,620px);
+    width:min(100%,720px);
+    max-height:min(74vh,860px);
     aspect-ratio:1440/1100;
     background:#0E1220;
     border-radius:12px;
@@ -197,6 +197,21 @@
   }
 
   .shot{width:100%;height:100%;object-fit:cover;object-position:top center;display:block;}
+
+  /* the device itself advances the flow */
+  .tapzone{cursor:pointer;position:relative;}
+  .tapzone::after{
+    content:'';position:absolute;inset:0;border-radius:inherit;
+    box-shadow:0 0 0 0 rgba(43,80,232,0);transition:box-shadow .18s ease;
+  }
+  .tapzone:hover::after{box-shadow:0 0 0 3px rgba(43,80,232,.35);}
+  .tapzone:focus-visible{outline:none;}
+  .tapzone:focus-visible::after{box-shadow:0 0 0 3px var(--accent);}
+  .taphint{
+    font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--ink-3);opacity:0;transition:opacity .18s ease;
+  }
+  .side:hover .taphint{opacity:1;}
 
   /* placeholders */
   .ph{
@@ -351,14 +366,16 @@
     </p>
   </header>
 
-  <div class="paths" role="group" aria-label="Release path">
-    <button type="button" id="path-regular" aria-pressed="true">Regular release</button>
-    <button type="button" id="path-tp" aria-pressed="false">Third party release</button>
+  <div class="paths" role="group" aria-label="Flow">
+    <button type="button" data-path="regular" aria-pressed="true">Regular release</button>
+    <button type="button" data-path="tp" aria-pressed="false">Third party release</button>
+    <button type="button" data-path="cx" aria-pressed="false">Customer app</button>
+    <button type="button" data-path="core" aria-pressed="false">Tenmark CORE</button>
   </div>
 
   <section class="stage" aria-label="Screens for this step">
     <div class="side" id="side-left">
-      <p class="side-label"><span class="dot"></span><span id="left-label">Partner app</span></p>
+      <p class="side-label"><span class="dot"></span><span id="left-label">Partner app</span><span class="taphint">tap to advance</span></p>
       <div class="device-wrap" id="left-device"></div>
     </div>
 
@@ -369,7 +386,7 @@
     </div>
 
     <div class="side" id="side-right">
-      <p class="side-label"><span class="dot"></span><span id="right-label">Oromoney</span></p>
+      <p class="side-label"><span class="dot"></span><span id="right-label">Oromoney</span><span class="taphint">tap to advance</span></p>
       <div class="device-wrap" id="right-device"></div>
     </div>
   </section>
@@ -438,47 +455,97 @@
      does not exist yet and always renders the "Not designed" placeholder. */
   var SCREENS = {
     /* --- partner app (Tenmark branch agent) --- */
-    'px-visits-listing': {frame:'px-app/gold-loan/release-visit/pickup/visits-listing--default', node:null},
-    'px-pickup':         {frame:'px-app/gold-loan/release-visit/pickup/visit-detail--start-visit', node:null},
-    'px-pickup-taken':   {frame:'px-app/gold-loan/release-visit/pickup/visit-detail--taken-by-agent', node:null},
-    'px-release-type':   {frame:'px-app/gold-loan/release-visit/pickup/release-type--select', node:null},
-    'px-show-code':      {frame:'px-app/gold-loan/release-visit/otp/show-code--generated', node:null},
-    'px-wait-photo':     {frame:'px-app/gold-loan/release-visit/otp/waiting--live-photo', node:null},
-    'px-verify-pending': {frame:'px-app/gold-loan/release-visit/verification/item-list--pending', node:null},
-    'px-verify-all':     {frame:'px-app/gold-loan/release-visit/verification/item-list--all-verified', node:null},
-    'px-flag-reason':    {frame:'px-app/gold-loan/release-visit/verification/flag-reason--select', node:null, designed:false},
-    'px-verify-blocked': {frame:'px-app/gold-loan/release-visit/verification/mismatch--blocked', node:null},
-    'px-fork':           {frame:'px-app/gold-loan/release-visit/fork/release-path--select', node:null},
-    'px-esign-progress': {frame:'px-app/gold-loan/release-visit/esign/waiting--in-progress', node:null},
-    'px-esign-done':     {frame:'px-app/gold-loan/release-visit/esign/waiting--signed', node:null},
-    'px-wait-receipt':   {frame:'px-app/gold-loan/release-visit/handover/waiting--receipt', node:null},
-    'px-handover-photo': {frame:'px-app/gold-loan/release-visit/handover/photo--capture', node:null},
-    'px-complete':       {frame:'px-app/gold-loan/release-visit/handover/visit--completed', node:null},
-    'px-tp-fork':        {frame:'px-app/gold-loan/release-visit/third-party/release-path--third-party', node:null},
-    'px-tp-identity':    {frame:'px-app/gold-loan/release-visit/third-party/identity--capture', node:null},
-    'px-tp-category':    {frame:'px-app/gold-loan/release-visit/third-party/category--select', node:null},
-    'px-tp-docs':        {frame:'px-app/gold-loan/release-visit/third-party/documents--upload', node:null},
-    'px-tp-docs-done':   {frame:'px-app/gold-loan/release-visit/third-party/documents--submitted', node:null},
-    'px-tp-pending':     {frame:'px-app/gold-loan/release-visit/third-party/approval--pending', node:null},
-    'px-tp-approved':    {frame:'px-app/gold-loan/release-visit/third-party/approval--approved', node:null},
-    'px-tp-photo':       {frame:'px-app/gold-loan/release-visit/third-party/photo--capture', node:null},
-    'px-tp-complete':    {frame:'px-app/gold-loan/release-visit/third-party/visit--completed', node:null},
+    'px-visits-listing': {frame:'px-app/gold-loan/release-visit/visits-listing/visits-listing--default', node:'2040:45912'},
+    'px-pickup': {frame:'px-app/gold-loan/release-visit/pickup/visit-detail--unassigned', node:'2040:43426'},
+    'px-pickup-taken': {frame:'px-app/gold-loan/release-visit/pickup/visit-detail--already-started', node:'2040:50485'},
+    'px-pickup-assigned': {frame:'px-app/gold-loan/release-visit/pickup/visit-detail--assigned', node:'2040:43560'},
+    'px-release-type': {frame:'px-app/gold-loan/release-visit/release-type/release-type-select--default', node:'2040:50657'},
+    'px-show-code': {frame:'px-app/gold-loan/release-visit/customer-verification/verification-code--default', node:'2040:50600'},
+    'px-wait-photo': {frame:'px-app/gold-loan/release-visit/customer-verification/liveliness-status--in-progress', node:'2040:51715'},
+    'px-customer-verified': {frame:'px-app/gold-loan/release-visit/customer-verification/visit-detail--customer-verified', node:'2040:51786'},
+    'px-verify-pending': {frame:'px-app/gold-loan/release-visit/gold-verification/item-listing--pending', node:'2040:51926'},
+    'px-item-detail': {frame:'px-app/gold-loan/release-visit/gold-verification/item-detail--default', node:'2040:52485'},
+    'px-item-markings': {frame:'px-app/gold-loan/release-visit/gold-verification/item-detail--markings-expanded', node:'2040:53075'},
+    'px-item-photo': {frame:'px-app/gold-loan/release-visit/gold-verification/item-detail--photo-expanded', node:'2040:53648'},
+    'px-item-remarks': {frame:'px-app/gold-loan/release-visit/gold-verification/item-detail--remarks', node:'2040:53776'},
+    'px-item-verified': {frame:'px-app/gold-loan/release-visit/gold-verification/item-detail--verified', node:'2040:52936'},
+    'px-verify-partly': {frame:'px-app/gold-loan/release-visit/gold-verification/item-listing--partly-verified', node:'2040:52357'},
+    'px-verify-all': {frame:'px-app/gold-loan/release-visit/gold-verification/item-listing--all-verified', node:'2040:52779'},
+    'px-verify-ready': {frame:'px-app/gold-loan/release-visit/gold-verification/item-listing--ready-to-submit', node:'2040:54079'},
+    'px-verify-confirm': {frame:'px-app/gold-loan/release-visit/gold-verification/item-listing--confirm', node:'2055:55005'},
+    'px-flag-reason': {frame:'px-app/gold-loan/release-visit/gold-verification/item-detail--mark-not-matched', node:'2055:66932'},
+    'px-item-not-matched': {frame:'px-app/gold-loan/release-visit/gold-verification/item-detail--not-matched', node:'2040:53172'},
+    'px-verify-has-mismatch': {frame:'px-app/gold-loan/release-visit/gold-verification/item-listing--has-mismatch', node:'2040:53479'},
+    'px-verify-mismatch-summary': {frame:'px-app/gold-loan/release-visit/gold-verification/item-listing--mismatch-summary', node:'2040:53276'},
+    'px-verify-mismatch-confirm': {frame:'px-app/gold-loan/release-visit/gold-verification/item-listing--mismatch-confirm', node:'2055:55543'},
+    'px-verify-blocked': {frame:'px-app/gold-loan/release-visit/gold-verification/visit-detail--blocked', node:'2055:55697'},
+    'px-fork': {frame:'px-app/gold-loan/release-visit/release-path/release-path-select--default', node:'2040:54420'},
+    'px-esign-progress': {frame:'px-app/gold-loan/release-visit/esign/esign-status--in-progress', node:'2055:55141'},
+    'px-esign-done': {frame:'px-app/gold-loan/release-visit/esign/esign-status--completed', node:'2055:55189'},
+    'px-wait-receipt': {frame:'px-app/gold-loan/release-visit/handover/acknowledgment-status--waiting', node:'2055:59346'},
+    'px-handover-photo': {frame:'px-app/gold-loan/release-visit/handover/release-proof-upload--empty', node:'2055:55256'},
+    'px-handover-captured': {frame:'px-app/gold-loan/release-visit/handover/release-proof-upload--captured', node:'2055:55302'},
+    'px-complete': {frame:'px-app/gold-loan/release-visit/handover/visit-complete--default', node:'2055:55348'},
+    'px-tp-visits-listing': {frame:'px-app/gold-loan/release-visit/third-party/visits-listing--default', node:'2055:55874'},
+    'px-tp-visit-unassigned': {frame:'px-app/gold-loan/release-visit/third-party/visit-detail--unassigned', node:'2055:55774'},
+    'px-tp-visit-assigned': {frame:'px-app/gold-loan/release-visit/third-party/visit-detail--assigned', node:'2055:55821'},
+    'px-tp-fork': {frame:'px-app/gold-loan/release-visit/third-party/release-path-select--default', node:'2040:54493'},
+    'px-tp-identity': {frame:'px-app/gold-loan/release-visit/third-party/third-party-details--empty', node:'2092:52354'},
+    'px-tp-category': {frame:'px-app/gold-loan/release-visit/third-party/category-select--default', node:'2055:54683'},
+    'px-tp-category-death': {frame:'px-app/gold-loan/release-visit/third-party/category-select--death-case', node:'2040:54550'},
+    'px-tp-docs': {frame:'px-app/gold-loan/release-visit/third-party/document-upload--empty', node:'2055:54787'},
+    'px-tp-docs-source': {frame:'px-app/gold-loan/release-visit/third-party/document-upload--source-sheet', node:'2055:59106'},
+    'px-tp-docs-uploaded': {frame:'px-app/gold-loan/release-visit/third-party/document-upload--uploaded', node:'2055:54875'},
+    'px-tp-docs-missing': {frame:'px-app/gold-loan/release-visit/third-party/document-upload--customer-missing', node:'2090:52099'},
+    'px-tp-docs-abroad': {frame:'px-app/gold-loan/release-visit/third-party/document-upload--customer-abroad', node:'2090:52191'},
+    'px-tp-docs-sick': {frame:'px-app/gold-loan/release-visit/third-party/document-upload--customer-sick', node:'2090:52283'},
+    'px-tp-docs-done': {frame:'px-app/gold-loan/release-visit/third-party/document-upload--confirm', node:'2055:56270'},
+    'px-tp-pending': {frame:'px-app/gold-loan/release-visit/third-party/approval-status--pending', node:'2055:56225'},
+    'px-tp-approved': {frame:'px-app/gold-loan/release-visit/third-party/approval-status--approved', node:'2055:56391'},
+    'px-tp-wait-receipt': {frame:'px-app/gold-loan/release-visit/third-party/acknowledgment-status--waiting', node:'2055:59393'},
+    'px-tp-photo': {frame:'px-app/gold-loan/release-visit/third-party/release-proof-upload--empty', node:'2055:59405'},
+    'px-tp-photo-captured': {frame:'px-app/gold-loan/release-visit/third-party/release-proof-upload--captured', node:'2055:59418'},
+    'px-tp-complete': {frame:'px-app/gold-loan/release-visit/third-party/visit-complete--default', node:'2055:59431'},
 
     /* --- customer app (Oromoney) --- */
-    'cx-code-empty':     {frame:'cx-app/gold-loan/release-visit/otp/enter-code--empty', node:null},
-    'cx-code-filled':    {frame:'cx-app/gold-loan/release-visit/otp/enter-code--filled', node:null},
-    'cx-code-error':     {frame:'cx-app/gold-loan/release-visit/otp/enter-code--error', node:null},
-    'cx-face':           {frame:'cx-app/gold-loan/release-visit/live-photo/capture--camera', node:null},
-    'cx-gold-wait':      {frame:'cx-app/gold-loan/release-visit/verification/waiting--gold-check', node:null},
-    'cx-esign-start':    {frame:'cx-app/gold-loan/release-visit/esign/leegality--start', node:null},
-    'cx-esign-done':     {frame:'cx-app/gold-loan/release-visit/esign/leegality--signed', node:null},
-    'cx-collect':        {frame:'cx-app/gold-loan/release-visit/handover/confirm-receipt--action', node:null},
-    'cx-complete':       {frame:'cx-app/gold-loan/release-visit/handover/visit--completed', node:null},
-    'cx-on-hold':        {frame:'cx-app/gold-loan/release-visit/blocked/visit--on-hold', node:null},
-    'cx-tp-rejected':    {frame:'cx-app/gold-loan/release-visit/third-party/visit--rejected', node:null, designed:false},
+    'cx-home': {frame:'cx-app/gold-loan/release-visit/visit-scheduling/home--default', node:'2040:48535'},
+    'cx-loan-closed': {frame:'cx-app/gold-loan/release-visit/loan/loan-detail--closed', node:'2040:46727'},
+    'cx-multiple-visits': {frame:'cx-app/multiple-release-visits', node:'2055:60149'},
+    'cx-visit-no-partner': {frame:'cx-app/gold-loan/release-visit/visit-scheduling/visit-detail--partner-not-assigned', node:'2040:48903'},
+    'cx-visit-partner': {frame:'cx-app/gold-loan/release-visit/visit-scheduling/visit-detail--partner-assigned', node:'2040:48961'},
+    'cx-visit-cancelled': {frame:'cx-app/gold-loan/release-visit/visit-scheduling/visit-detail--cancelled', node:'2055:67338'},
+    'cx-code-empty': {frame:'cx-app/gold-loan/release-visit/customer-verification/verification-code--empty', node:'2040:51121'},
+    'cx-code-filled': {frame:'cx-app/gold-loan/release-visit/customer-verification/verification-code--filled', node:'2040:51275'},
+    'cx-code-verifying': {frame:'cx-app/gold-loan/release-visit/customer-verification/verification-code--verifying', node:'2040:51354'},
+    'cx-code-error': {frame:'cx-app/gold-loan/release-visit/customer-verification/verification-code--error', node:'2040:51425'},
+    'cx-face': {frame:'cx-app/gold-loan/release-visit/liveliness-check/face-capture--default', node:'2040:51499'},
+    'cx-face-captured': {frame:'cx-app/gold-loan/release-visit/liveliness-check/face-capture--captured', node:'2040:51531'},
+    'cx-gold-wait': {frame:'cx-app/gold-loan/release-visit/gold-verification/verification-status--in-progress', node:'2040:51061'},
+    'cx-esign-start': {frame:'cx-app/gold-loan/release-visit/esign/esign-start--default', node:'2055:59619'},
+    'cx-esign-document': {frame:'cx-app/gold-loan/release-visit/esign/esign-document--view', node:'2055:59593'},
+    'cx-esign-done': {frame:'cx-app/gold-loan/release-visit/esign/esign-status--completed', node:'2055:59604'},
+    'cx-collect': {frame:'cx-app/gold-loan/release-visit/handover/collect-gold--default', node:'2055:59955'},
+    'cx-complete': {frame:'cx-app/gold-loan/release-visit/handover/visit-complete--default', node:'2040:48510'},
+    'cx-visit-started-alt': {frame:'cx-app/release-visit--started', node:'2055:60817'},
 
     /* --- Tenmark CORE (web back-office) --- */
-    'core-approval':     {frame:'core/gold-loan/release-visit/third-party/approval-queue--detail', node:null}
+    'core-visits-listing': {frame:'web/gold-loan/release-visit/visits-listing/visit-listing--default', node:'2055:62550'},
+    'core-visits-all': {frame:'web/gold-loan/release-visit/visits-listing/visit-listing--all-visits', node:'2055:58535'},
+    'core-visit-detail': {frame:'web/gold-loan/release-visit/visit-detail/visit-detail--default', node:'2055:62200'},
+    'core-gold-items': {frame:'web/gold-loan/release-visit/visit-detail/visit-detail--gold-items', node:'2055:63291'},
+    'core-item-detail': {frame:'web/gold-loan/release-visit/visit-detail/item-detail--default', node:'2055:66015'},
+    'core-item-damage': {frame:'web/gold-loan/release-visit/visit-detail/item-detail--damage', node:'2098:70722'},
+    'core-activity-log': {frame:'web/gold-loan/release-visit/visit-detail/visit-detail--activity-log', node:'2055:65692'},
+    'core-approval': {frame:'web/gold-loan/release-visit/third-party-approval/approval-detail--default', node:'2055:56886'},
+    'core-approval-docs': {frame:'web/gold-loan/release-visit/third-party-approval/approval-detail--documents', node:'2055:57413'},
+    'core-approve-confirm': {frame:'web/gold-loan/release-visit/third-party-approval/approval-detail--approve-confirm', node:'2055:64166'},
+    'core-approved': {frame:'web/gold-loan/release-visit/third-party-approval/approval-detail--approved', node:'2055:64537'},
+    'core-reject-confirm': {frame:'web/gold-loan/release-visit/third-party-approval/approval-detail--reject-confirm', node:'2055:61821'},
+    'core-rejected': {frame:'web/gold-loan/release-visit/third-party-approval/approval-detail--rejected', node:'2055:65029'},
+
+    /* --- customer app (Oromoney) --- */
+    'cx-on-hold': {frame:'cx-app/gold-loan/release-visit/blocked/visit--on-hold', node:null, designed:false},
+    'cx-tp-rejected': {frame:'cx-app/gold-loan/release-visit/third-party/visit--rejected', node:null, designed:false}
   };
 
   var GROUPS = [
@@ -490,147 +557,343 @@
   /* actor: 'agent' | 'customer' | 'both' | 'core' */
   var FLOWS = {
     regular: [
-      {id:'visit-lands', actor:'both', state:'Visit Confirmed',
-       title:'The visit lands on both surfaces at once',
-       body:'The customer has already paid the closure amount and booked the slot. The visit appears in the partner app for every agent at that branch holding the Perform Release Visit permission, and view-only in Oro Admin. The release location is locked to the originating Tenmark lender branch and cannot be edited on any surface.',
-       left:'px-visits-listing', right:null},
-
-      {id:'self-assign', actor:'agent', state:'Visit Started',
+      {id:'visits-listing', actor:'agent', state:'Visit Confirmed',
+       title:'The visit lands on the Release Visits tab',
+       body:'The customer has already paid the closure amount and booked. The visit shows for every agent at that branch holding Perform Release Visit, and view-only in Oro Admin. Release location is locked to the originating Tenmark lender branch.',
+       left:'px-visits-listing', right:'cx-visit-no-partner'},
+      {id:'start-visit', actor:'agent', state:'Visit Confirmed',
        title:'The first agent to act owns the visit',
-       body:'There is no assigner. Whoever drags the slider claims the visit for its lifetime — no takeover, no reassignment, enforced server side rather than in the app.',
-       left:'px-pickup', right:null},
-
-      {id:'locked-out', actor:'agent', state:'Visit Started',
+       body:'There is no assigner. Whoever taps Start Visit claims it for its lifetime - no takeover, no reassignment, enforced server side.',
+       left:'px-pickup', right:'cx-visit-no-partner'},
+      {id:'already-started', actor:'agent', state:'Visit Started', fail:true,
        title:'Everyone else sees who took it',
-       body:'The same visit, opened by a second agent at the same branch. The slider is dead and carries the owner’s name in place of an action: Visit initiated by <agent name>.',
-       left:'px-pickup-taken', right:null},
-
+       body:'The same visit opened by a second agent. The action is replaced by the owner name: Visit initiated by <agent name>.',
+       left:'px-pickup-taken', right:'cx-visit-partner'},
+      {id:'assigned', actor:'agent', state:'Visit Started',
+       title:'Assigned, and the customer can see who is coming',
+       body:'The owning agent now drives the visit. On the customer side the visit detail switches from waiting to naming the assigned partner.',
+       left:'px-pickup-assigned', right:'cx-visit-partner'},
       {id:'release-type', actor:'agent', state:'Visit Started',
        title:'Release type is a tag, not a branch',
-       body:'Full release, part release or manual renewal. Recorded against the visit for reference and changes nothing downstream — every valued item is listed for verification either way. There is no dedicated part-release flow.',
-       left:'px-release-type', right:null},
-
-      {id:'code', actor:'both', state:'OTP Confirmed',
+       body:'Full release, part release or manual renewal. Stored for reference and changes nothing downstream - every valued item is listed for verification either way.',
+       left:'px-release-type', right:'cx-visit-partner'},
+      {id:'code', actor:'both', state:'Visit Started',
        title:'A code read out loud, typed in by the customer',
-       body:'The partner app generates a four-digit code. The agent reads it out, the customer types it into their own app on their own login. Nothing is sent to the customer’s phone.',
+       body:'The partner app generates the code and the agent reads it out. Nothing is sent to the customer phone - they type what they hear, on their own login.',
+       left:'px-show-code', right:'cx-code-empty'},
+      {id:'code-filled', actor:'customer', state:'OTP Confirmed',
+       title:'Entered and verified',
+       body:'Four digits, then a verifying state while the backend confirms the match.',
        left:'px-show-code', right:'cx-code-filled'},
-
-      {id:'wrong-code', actor:'customer', state:'Visit Started', fail:true,
+      {id:'code-error', actor:'customer', state:'Visit Started', fail:true,
        title:'A wrong code points back at the agent',
-       body:'The error tells the customer to ask the agent to read the code again, rather than implying they mistyped it. The visit stays where it is and the code can be re-entered on the same visit.',
+       body:'The error asks the customer to have the agent read it again rather than implying they mistyped. The visit stays where it is and the code can be re-entered.',
        left:'px-show-code', right:'cx-code-error'},
-
-      {id:'photo', actor:'customer', state:'Live Photo Captured',
+      {id:'live-photo', actor:'customer', state:'Live Photo Captured',
        title:'The live photo is the gate on verification',
-       body:'Until this lands, Verify Gold Items does not exist for the agent. The gate is server side, not a hidden button — there is no parallel start.',
+       body:'Until this lands, Verify Gold Items does not exist for the agent. Server-side gate, not a hidden button - there is no parallel start.',
        left:'px-wait-photo', right:'cx-face'},
-
-      {id:'verify', actor:'agent', state:'Gold Verification Pending',
-       title:'Every item, against the valuation record',
-       body:'Each item is checked on purity, gross weight, net weight, item photo and distinctive marks as captured at pledge. There is no assay sheet in this system and nothing external is opened from this screen. Remarks are optional on every item, verified or flagged.',
+      {id:'photo-captured', actor:'both', state:'Live Photo Captured',
+       title:'Captured, and the agent is unblocked',
+       body:'The partner app flips to customer verified and the Verify Gold Items action appears.',
+       left:'px-customer-verified', right:'cx-face-captured'},
+      {id:'item-list', actor:'agent', state:'Gold Verification Pending',
+       title:'Every valued item on the loan, listed',
+       body:'Regardless of the release type chosen at pickup. The customer waits on a gold verification screen throughout.',
        left:'px-verify-pending', right:'cx-gold-wait'},
-
-      {id:'flag-reason', actor:'agent', state:'Gold Verification Pending',
-       title:'A flag needs one of seven reasons',
-       body:'Loss of ornaments, damage, stone missing, gold weight reduction, bend or breakage, change in ornament type, or a specific part missing. The reason is mandatory; a flag without one is rejected. Remarks stay optional.',
-       left:'px-flag-reason', right:'cx-gold-wait'},
-
-      {id:'all-verified', actor:'agent', state:'Gold Verified',
-       title:'Select all, mark verified, confirm',
-       body:'The happy path is one action, not one per item. Once submitted, verification is append-only — the agent cannot edit or undo it in the app.',
+      {id:'item-detail', actor:'agent', state:'Gold Verification Pending',
+       title:'Checked against the valuation record',
+       body:'Purity, gross weight, net weight, item photo and distinctive marks as captured at pledge. There is no assay sheet in this system and nothing external is opened from here.',
+       left:'px-item-detail', right:'cx-gold-wait'},
+      {id:'item-photo', actor:'agent', state:'Gold Verification Pending',
+       title:'The pledge photo, full bleed',
+       body:'The item photo from valuation expands so the agent can compare it against what is physically in front of them.',
+       left:'px-item-photo', right:'cx-gold-wait'},
+      {id:'item-remarks', actor:'agent', state:'Gold Verification Pending',
+       title:'Remarks are optional on every item',
+       body:'Available whether the item is verified or flagged. Only the flag reason is mandatory.',
+       left:'px-item-remarks', right:'cx-gold-wait'},
+      {id:'item-verified', actor:'agent', state:'Gold Verification Pending',
+       title:'One item marked verified',
+       body:'Item-level status, reason, remarks, agent identity and timestamp are persisted and written to the activity log.',
+       left:'px-item-verified', right:'cx-gold-wait'},
+      {id:'partly-verified', actor:'agent', state:'Gold Verification Pending',
+       title:'Partial verification cannot advance',
+       body:'Every valued item must carry a verified or flagged outcome before the CTA resolves.',
+       left:'px-verify-partly', right:'cx-gold-wait'},
+      {id:'all-verified', actor:'agent', state:'Gold Verification Pending',
+       title:'Select all, mark verified',
+       body:'The happy path is one action, not one per item.',
        left:'px-verify-all', right:'cx-gold-wait'},
-
+      {id:'ready-submit', actor:'agent', state:'Gold Verification Pending',
+       title:'Ready to submit',
+       body:'Once submitted, verification is append-only - the agent cannot edit or undo it in the app.',
+       left:'px-verify-ready', right:'cx-gold-wait'},
+      {id:'verify-confirm', actor:'agent', state:'Gold Verified',
+       title:'Confirmed',
+       body:'Verification passes and the fork is presented.',
+       left:'px-verify-confirm', right:'cx-gold-wait'},
       {id:'fork', actor:'agent', state:'Gold Verified',
        title:'The fork sits after verification, never at pickup',
-       body:'Regular release or third party release. Choosing it here means the gold has already been checked before anyone decides how it leaves the branch.',
+       body:'Regular release or third party release. Choosing here means the gold has already been checked before anyone decides how it leaves the branch.',
        left:'px-fork', right:'cx-gold-wait'},
-
-      {id:'sign', actor:'customer', state:'eSign In Progress',
+      {id:'esign-start', actor:'customer', state:'eSign In Progress',
        title:'The customer signs before anything is handed over',
-       body:'Signing runs on the customer’s own phone through the existing Leegality flow used for the pledge card, with the customer as signatory. Abandoning mid-signature leaves the visit here and it can be resumed without creating a second document.',
+       body:'On their own phone through the existing Leegality flow used for the pledge card, with the customer as signatory.',
        left:'px-esign-progress', right:'cx-esign-start'},
-
-      {id:'signed', actor:'customer', state:'eSigned',
+      {id:'esign-document', actor:'customer', state:'eSign In Progress',
+       title:'The release document itself',
+       body:'Abandoning mid-signature leaves the visit here; it resumes on the same visit without creating a second document.',
+       left:'px-esign-progress', right:'cx-esign-document'},
+      {id:'esigned', actor:'both', state:'eSigned',
        title:'Signed, and stored against both records',
-       body:'The document is filed against the loan and the visit, and is viewable in Tenmark CORE. A repeated callback does not produce a second artefact.',
+       body:'Filed against the loan and the visit, viewable in Tenmark CORE. A repeated callback does not produce a second artefact.',
        left:'px-esign-done', right:'cx-esign-done'},
-
       {id:'receipt', actor:'customer', state:'Receipt Confirmed',
        title:'The gold changes hands, then the customer confirms',
-       body:'The agent hands the items over first; the customer confirms receipt in Oromoney on their own login. There is no receipt confirmation surface in the partner app at all.',
+       body:'The agent hands the items over first; receipt is confirmed in Oromoney on the customer login. There is no receipt surface in the partner app at all.',
        left:'px-wait-receipt', right:'cx-collect'},
-
       {id:'handover-photo', actor:'agent', state:'Receipt Confirmed',
        title:'A photo of the customer holding the gold',
-       body:'Mandatory on the agent’s device, no retake limit, and the visit cannot be completed without it. The photo is stored tagged with the role of the person in frame.',
+       body:'Mandatory, agent device, no retake limit. The visit cannot complete without it.',
        left:'px-handover-photo', right:'cx-collect'},
-
+      {id:'photo-captured-2', actor:'agent', state:'Receipt Confirmed',
+       title:'Captured and attached',
+       body:'Stored against the visit tagged with the role of the person in frame.',
+       left:'px-handover-captured', right:'cx-collect'},
       {id:'complete', actor:'both', state:'Completed',
        title:'Closed on both sides',
-       body:'Verification outcomes, the signed document, the receipt confirmation and the handover photo are all on the visit record, with an activity log entry for every state change.',
+       body:'Verification outcomes, the signed document, the receipt confirmation and the handover photo all sit on the visit record.',
        left:'px-complete', right:'cx-complete'},
-
-      {id:'mismatch', actor:'agent', state:'Release Visit Blocked', fail:true,
+      {id:'flag-reason', actor:'agent', state:'Gold Verification Pending', fail:true,
+       title:'A flag needs one of seven reasons',
+       body:'Loss, damage, stone missing, weight reduction, bend or breakage, change in ornament type, or a specific part missing. Mandatory - a flag without a reason is rejected.',
+       left:'px-flag-reason', right:'cx-gold-wait'},
+      {id:'item-not-matched', actor:'agent', state:'Gold Verification Pending', fail:true,
+       title:'The item is recorded as not matched',
+       body:'Reason and any remarks are persisted against the item and surface in the CORE mismatch table.',
+       left:'px-item-not-matched', right:'cx-gold-wait'},
+      {id:'has-mismatch', actor:'agent', state:'Gold Verification Pending', fail:true,
+       title:'One flag changes the primary CTA',
+       body:'With any item flagged, the button becomes Finish Verification rather than a completion action.',
+       left:'px-verify-has-mismatch', right:'cx-gold-wait'},
+      {id:'mismatch-summary', actor:'agent', state:'Gold Verification Pending', fail:true,
+       title:'The mismatch summary',
+       body:'What was flagged and why, before the agent commits.',
+       left:'px-verify-mismatch-summary', right:'cx-gold-wait'},
+      {id:'mismatch-confirm', actor:'agent', state:'Gold Verification Pending', fail:true,
+       title:'Cannot proceed due to mismatch',
+       body:'The modal reads: Cannot proceed due to mismatch. Please contact Tech Support.',
+       left:'px-verify-mismatch-confirm', right:'cx-gold-wait'},
+      {id:'blocked', actor:'agent', state:'Release Visit Blocked', fail:true,
        title:'One flagged item stops everything',
-       body:'Any single flag blocks the visit on every surface: Cannot proceed due to mismatch. Please contact Tech Support. Resolution is manual and off-app, case by case. The customer is told only that there is a technical issue and that Oro will come back to them.',
+       body:'The visit is blocked on every surface. Resolution is manual and off-app, case by case. The customer screen for this state is not designed yet.',
        left:'px-verify-blocked', right:'cx-on-hold'}
     ],
 
     tp: [
+      {id:'tp-listing', actor:'agent', state:'Visit Confirmed',
+       title:'Same tab, same pickup',
+       body:'A third party release is not flagged at booking. It starts as an ordinary release visit.',
+       left:'px-tp-visits-listing', right:'cx-visit-no-partner'},
+      {id:'tp-unassigned', actor:'agent', state:'Visit Confirmed',
+       title:'Waiting to be picked up',
+       body:'Nothing about this visit yet says it will end as a third party handover.',
+       left:'px-tp-visit-unassigned', right:'cx-visit-no-partner'},
+      {id:'tp-assigned', actor:'agent', state:'Visit Started',
+       title:'Picked up',
+       body:'Code, live photo and gold verification all run exactly as on the regular path first.',
+       left:'px-tp-visit-assigned', right:'cx-visit-partner'},
       {id:'tp-fork', actor:'agent', state:'Gold Verified',
        title:'Third party: no signature anywhere on this path',
        body:'No eSign and no release letter is generated. The paper trail is the uploaded document set plus the handover photo.',
        left:'px-tp-fork', right:'cx-gold-wait'},
-
       {id:'tp-identity', actor:'agent', state:'Third Party Documents Pending',
        title:'Identity captured as data, not as a scan',
-       body:'Five fields on the person collecting the gold: full name, relationship to the customer, PAN, Aadhaar and mobile number. Typed in, alongside the KYC uploads rather than instead of them.',
+       body:'Full name, relationship to the customer, PAN, Aadhaar and mobile number - typed in, alongside the KYC uploads rather than instead of them.',
        left:'px-tp-identity', right:'cx-gold-wait'},
-
       {id:'tp-category', actor:'agent', state:'Third Party Documents Pending',
        title:'Four reasons, two different document sets',
-       body:'Death case, customer missing, customer abroad or out of city, customer sick or hospitalised. Death needs six documents; the other three need seven.',
+       body:'Death case, customer missing, customer abroad or out of city, customer sick or hospitalised.',
        left:'px-tp-category', right:'cx-gold-wait'},
-
+      {id:'tp-death', actor:'agent', state:'Third Party Documents Pending',
+       title:'Death case: six documents',
+       body:'Death certificate, legal heir certificate or family tree, request letter from the nominee or legal heir, PAN, Aadhaar, and a declaration executed by the nominee or heir.',
+       left:'px-tp-category-death', right:'cx-gold-wait'},
       {id:'tp-docs', actor:'agent', state:'Third Party Documents Pending',
        title:'Every document is mandatory',
-       body:'A failed or missing upload blocks submission — partial sets cannot be sent for approval. JPG, PNG or PDF, up to 10 MB per file. Uploads happen here in the partner app only.',
+       body:'A failed or missing upload blocks submission - partial sets cannot be sent for approval. JPG, PNG or PDF up to 10 MB.',
        left:'px-tp-docs', right:'cx-gold-wait'},
-
-      {id:'tp-submitted', actor:'agent', state:'Pending Third Party Approval',
+      {id:'tp-source', actor:'agent', state:'Third Party Documents Pending',
+       title:'Camera or files',
+       body:'Uploads happen in the partner app only. Nothing is ever uploaded from CORE.',
+       left:'px-tp-docs-source', right:'cx-gold-wait'},
+      {id:'tp-uploaded', actor:'agent', state:'Third Party Documents Pending',
+       title:'Uploaded',
+       body:'Each document is held against the visit as it lands.',
+       left:'px-tp-docs-uploaded', right:'cx-gold-wait'},
+      {id:'tp-missing', actor:'agent', state:'Third Party Documents Pending',
+       title:'Customer missing: seven documents',
+       body:'Adds the police FIR and a non-traceable report on top of the death-case set.',
+       left:'px-tp-docs-missing', right:'cx-gold-wait'},
+      {id:'tp-abroad', actor:'agent', state:'Third Party Documents Pending',
+       title:'Abroad or out of city: seven documents',
+       body:'Email request from the registered address, signed request letter, support-team video-call confirmation, and a travel ticket or visa as the supporting document.',
+       left:'px-tp-docs-abroad', right:'cx-gold-wait'},
+      {id:'tp-sick', actor:'agent', state:'Third Party Documents Pending',
+       title:'Sick or hospitalised: seven documents',
+       body:'Same set as abroad, with a medical certificate as the supporting document.',
+       left:'px-tp-docs-sick', right:'cx-gold-wait'},
+      {id:'tp-submit', actor:'agent', state:'Pending Third Party Approval',
        title:'Submitted, and now it waits',
-       body:'The approval lands with Tenmark Central Operations. Nothing is ever uploaded from CORE, and there are no notifications — the queue is monitored manually.',
+       body:'The approval lands with Tenmark Central Operations. There are no notifications - the queue is monitored manually.',
        left:'px-tp-docs-done', right:'cx-gold-wait'},
-
-      {id:'tp-approval', actor:'core', state:'Pending Third Party Approval',
+      {id:'tp-pending', actor:'agent', state:'Pending Third Party Approval',
        title:'The only step measured in days',
-       body:'In CORE, an approver holding Approve Third Party Release sees the identity details and every uploaded document, and must record a reason either way. The visit cannot proceed to handover until they do, and the approval survives a session gap so the third party can leave and come back.',
+       body:'The visit cannot proceed to handover until an approver acts, and the approval survives a session gap so the third party can leave and come back.',
+       left:'px-tp-pending', right:'cx-gold-wait'},
+      {id:'tp-approval', actor:'core', state:'Pending Third Party Approval',
+       title:'Approved in CORE, with a reason',
+       body:'The approver holding Approve Third Party Release sees the identity details and every uploaded document, and must record a reason either way.',
        left:'px-tp-pending', right:'core-approval'},
-
       {id:'tp-approved', actor:'agent', state:'Third Party Approved',
        title:'Approved, and the path rejoins the regular one',
-       body:'From here the steps are the same as a regular release, minus the signature: hand over, confirm receipt, capture the photo.',
+       body:'From here the steps are the same as a regular release, minus the signature.',
        left:'px-tp-approved', right:'cx-gold-wait'},
-
       {id:'tp-receipt', actor:'customer', state:'Receipt Confirmed',
-       title:'Still the customer’s own login',
-       body:'Receipt is confirmed in Oromoney under the customer’s credentials even in death and missing cases, where the family will be operating that login. That is a stated accepted risk, not an oversight — the controlling evidence here is the document set, the approval and the handover photo.',
-       left:'px-wait-receipt', right:'cx-collect'},
-
+       title:'Still the customer own login',
+       body:'Receipt is confirmed in Oromoney under the customer credentials even in death and missing cases, where the family will be operating that login. A stated accepted risk, not an oversight.',
+       left:'px-tp-wait-receipt', right:'cx-collect'},
       {id:'tp-photo', actor:'agent', state:'Receipt Confirmed',
        title:'Photographed with the role recorded',
-       body:'The nominee or legal heir for death and missing cases, the third party for the two regular reasons. Mandatory, and stored with that role against it.',
+       body:'The nominee or legal heir for death and missing cases, the third party for the two regular reasons.',
        left:'px-tp-photo', right:'cx-collect'},
-
+      {id:'tp-photo-done', actor:'agent', state:'Receipt Confirmed',
+       title:'Captured',
+       body:'Stored against the visit, tagged with that role.',
+       left:'px-tp-photo-captured', right:'cx-collect'},
       {id:'tp-complete', actor:'both', state:'Completed',
        title:'Closed with documents, not a signature',
-       body:'No eSign artefact and no generated release letter exists for this visit. The record is the approved document set, the approval reason, and the handover photo.',
+       body:'No eSign artefact and no generated release letter exists for this visit.',
        left:'px-tp-complete', right:'cx-complete'},
-
       {id:'tp-rejected', actor:'both', state:'Third Party Rejected', fail:true,
        title:'Rejected closes the visit, not the loan',
-       body:'The payment stays with Oro and the ledger stays closed. The customer books again from scratch — fresh pickup, fresh code, fresh live photo, fresh verification — and may take either path next time. There is no cap on how often they can reschedule.',
+       body:'Payment stays with Oro and the ledger stays closed. The customer books again from scratch and may take either path. The customer screen for this is not designed yet.',
        left:'px-tp-pending', right:'cx-tp-rejected'}
+    ],
+
+    cx: [
+      {id:'cx-home', actor:'customer', state:'Visit Scheduled',
+       title:'Where the customer starts',
+       body:'The release visit is scheduled from the Oromoney home after the closure payment has completed. Where payment is by VAN, that clears first.',
+       left:'px-visits-listing', right:'cx-home'},
+      {id:'cx-loan', actor:'customer', state:'Visit Scheduled',
+       title:'The closed loan',
+       body:'The loan reads as closed once the closure payment lands - the gold is still with the branch until the release visit runs.',
+       left:'px-visits-listing', right:'cx-loan-closed'},
+      {id:'cx-multiple', actor:'customer', state:'Visit Scheduled',
+       title:'More than one release in flight',
+       body:'A customer with several loans can have several release visits open at once.',
+       left:'px-visits-listing', right:'cx-multiple-visits'},
+      {id:'cx-no-partner', actor:'customer', state:'Visit Confirmed',
+       title:'Booked, nobody assigned yet',
+       body:'Until an agent picks the visit up, the customer sees the slot but no name.',
+       left:'px-pickup', right:'cx-visit-no-partner'},
+      {id:'cx-partner', actor:'customer', state:'Visit Started',
+       title:'Assigned',
+       body:'Once an agent claims it, the customer sees who is handling the release.',
+       left:'px-pickup-assigned', right:'cx-visit-partner'},
+      {id:'cx-code', actor:'customer', state:'Visit Started',
+       title:'Enter the code the agent reads out',
+       body:'Empty, filled, verifying - the customer types what they hear rather than receiving an SMS.',
+       left:'px-show-code', right:'cx-code-empty'},
+      {id:'cx-verifying', actor:'customer', state:'OTP Confirmed',
+       title:'Verifying',
+       body:'The backend confirms the match before the customer moves on.',
+       left:'px-show-code', right:'cx-code-verifying'},
+      {id:'cx-error', actor:'customer', state:'Visit Started', fail:true,
+       title:'Wrong code',
+       body:'Points the customer back to the agent rather than at themselves.',
+       left:'px-show-code', right:'cx-code-error'},
+      {id:'cx-face', actor:'customer', state:'Live Photo Captured',
+       title:'Live photo',
+       body:'Reuses the existing liveliness capability. This is the gate that unblocks gold verification.',
+       left:'px-wait-photo', right:'cx-face'},
+      {id:'cx-wait', actor:'customer', state:'Gold Verification Pending',
+       title:'Waiting while the agent checks the gold',
+       body:'The customer sits on this screen for the whole verification, however long it takes.',
+       left:'px-verify-pending', right:'cx-gold-wait'},
+      {id:'cx-esign', actor:'customer', state:'eSign In Progress',
+       title:'Sign the release document',
+       body:'Through the existing Leegality flow, with the customer as signatory.',
+       left:'px-esign-progress', right:'cx-esign-start'},
+      {id:'cx-collect', actor:'customer', state:'Receipt Confirmed',
+       title:'Confirm the gold was received',
+       body:'The only place receipt can be confirmed, on both paths.',
+       left:'px-wait-receipt', right:'cx-collect'},
+      {id:'cx-done', actor:'customer', state:'Completed',
+       title:'Done',
+       body:'The release is closed on the customer side too.',
+       left:'px-complete', right:'cx-complete'},
+      {id:'cx-cancelled', actor:'customer', state:'Third Party Rejected', fail:true,
+       title:'Cancelled',
+       body:'Where a visit closes without a release, the customer returns to the schedule stage and books again.',
+       left:'px-tp-pending', right:'cx-visit-cancelled'}
+    ],
+
+    core: [
+      {id:'core-listing', actor:'core', state:'Visit Confirmed',
+       title:'The release visits queue',
+       body:'Tenmark CORE holds third party approval, the mismatch table and the signed document view. It is not where the visit is worked.',
+       left:'px-visits-listing', right:'core-visits-listing'},
+      {id:'core-all', actor:'core', state:'Visit Confirmed',
+       title:'All visits',
+       body:'The full list across states, for monitoring rather than action.',
+       left:'px-visits-listing', right:'core-visits-all'},
+      {id:'core-detail', actor:'core', state:'Visit Started',
+       title:'A visit in CORE',
+       body:'Everything recorded against the release, read-only for most roles.',
+       left:'px-pickup-assigned', right:'core-visit-detail'},
+      {id:'core-items', actor:'core', state:'Gold Verified',
+       title:'The gold items and their outcomes',
+       body:'Item-level status, reason, remarks, agent identity and timestamp, exactly as submitted from the partner app.',
+       left:'px-verify-all', right:'core-gold-items'},
+      {id:'core-item', actor:'core', state:'Gold Verified',
+       title:'One item, in full',
+       body:'The valuation record beside what the agent recorded on the day.',
+       left:'px-item-detail', right:'core-item-detail'},
+      {id:'core-damage', actor:'core', state:'Release Visit Blocked', fail:true,
+       title:'A flagged item in the mismatch table',
+       body:'Flagged items surface here with reason and remarks. Visible to anyone with access to the page - no dedicated permission gates it.',
+       left:'px-verify-blocked', right:'core-item-damage'},
+      {id:'core-log', actor:'core', state:'Completed',
+       title:'Activity log',
+       body:'Every state change is written server side and readable here.',
+       left:'px-complete', right:'core-activity-log'},
+      {id:'core-approval', actor:'core', state:'Pending Third Party Approval',
+       title:'The third party approval',
+       body:'Identity details and every uploaded document, for an approver holding Approve Third Party Release.',
+       left:'px-tp-pending', right:'core-approval'},
+      {id:'core-docs', actor:'core', state:'Pending Third Party Approval',
+       title:'The document set',
+       body:'Six documents for a death case, seven for the others. Nothing is uploaded from here.',
+       left:'px-tp-docs-done', right:'core-approval-docs'},
+      {id:'core-approve-confirm', actor:'core', state:'Pending Third Party Approval',
+       title:'Approving requires a reason',
+       body:'Recorded against the visit with actor and timestamp.',
+       left:'px-tp-pending', right:'core-approve-confirm'},
+      {id:'core-approved', actor:'core', state:'Third Party Approved',
+       title:'Approved',
+       body:'The visit moves to Third Party Approved and handover can proceed.',
+       left:'px-tp-approved', right:'core-approved'},
+      {id:'core-reject-confirm', actor:'core', state:'Pending Third Party Approval', fail:true,
+       title:'Rejecting requires a reason too',
+       body:'The same field, the opposite outcome.',
+       left:'px-tp-pending', right:'core-reject-confirm'},
+      {id:'core-rejected', actor:'core', state:'Third Party Rejected', fail:true,
+       title:'Rejected',
+       body:'The visit closes, the payment is retained, the ledger stays closed, and the customer returns to the schedule stage.',
+       left:'px-tp-pending', right:'core-rejected'}
     ]
   };
 
@@ -718,6 +981,14 @@
     img.className = 'shot';
     img.alt = meta.frame;
     img.src = SCREEN_DIR + key + '.png';
+    // ! Exports are taller than a stock phone (2.16 vs up to 2.51), so the frame
+    // ! takes its ratio from the file rather than cropping the bottom off.
+    img.addEventListener('load', function () {
+      var frame = img.closest('.phone') || img.closest('.browser');
+      if (frame && img.naturalWidth && img.naturalHeight) {
+        frame.style.aspectRatio = img.naturalWidth + '/' + img.naturalHeight;
+      }
+    });
     img.addEventListener('error', function () {
       if (img.parentNode) img.parentNode.replaceChild(placeholder('missing', key), img);
     });
@@ -755,17 +1026,35 @@
     return outer;
   }
 
+  function tappable(node) {
+    // ! Clickable non-button, so it needs the keyboard affordances a button
+    // ! gets for free: focusable, Enter/Space, and a role.
+    node.classList.add('tapzone');
+    node.tabIndex = 0;
+    node.setAttribute('role', 'button');
+    node.setAttribute('aria-label', 'Next step');
+    node.addEventListener('click', function () { move(1); });
+    node.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+        e.preventDefault();
+        move(1);
+      }
+    });
+    return node;
+  }
+
   function render() {
     var s = step();
     var isCore = s.actor === 'core';
 
     el.left.textContent = '';
     el.right.textContent = '';
-    el.left.appendChild(phone(s.left));
-    el.right.appendChild(isCore ? browser(s.right) : phone(s.right));
+    el.left.appendChild(tappable(phone(s.left)));
+    el.right.appendChild(tappable(isCore ? browser(s.right) : phone(s.right)));
 
     el.leftLabel.textContent = 'Partner app';
     el.rightLabel.textContent = isCore ? 'Tenmark CORE' : 'Oromoney';
+    el.leftLabel.textContent = 'Partner app';
 
     var leftActive = s.actor === 'agent' || s.actor === 'both';
     var rightActive = s.actor === 'customer' || s.actor === 'both' || s.actor === 'core';
@@ -786,6 +1075,11 @@
     });
     el.prev.disabled = state.index === 0;
     el.next.disabled = state.index === all.length - 1;
+    var atEnd = state.index === all.length - 1;
+    Array.prototype.forEach.call(document.querySelectorAll('.tapzone'), function (z) {
+      z.style.cursor = atEnd ? 'default' : 'pointer';
+      z.setAttribute('aria-label', atEnd ? 'Last step' : 'Next step');
+    });
     el.counter.textContent = (state.index + 1) + ' / ' + all.length;
   }
 
@@ -804,8 +1098,9 @@
   function setPath(path) {
     state.path = path;
     state.index = 0;
-    document.getElementById('path-regular').setAttribute('aria-pressed', String(path === 'regular'));
-    document.getElementById('path-tp').setAttribute('aria-pressed', String(path === 'tp'));
+    Array.prototype.forEach.call(document.querySelectorAll('.paths button'), function (b) {
+      b.setAttribute('aria-pressed', String(b.getAttribute('data-path') === path));
+    });
     buildRail();
     render();
   }
@@ -859,8 +1154,9 @@
     el.metaCount.textContent = keys.length + ' screens · ' + missingIds + ' without a node id';
   }
 
-  document.getElementById('path-regular').addEventListener('click', function () { setPath('regular'); });
-  document.getElementById('path-tp').addEventListener('click', function () { setPath('tp'); });
+  Array.prototype.forEach.call(document.querySelectorAll('.paths button'), function (b) {
+    b.addEventListener('click', function () { setPath(b.getAttribute('data-path')); });
+  });
   el.prev.addEventListener('click', function () { move(-1); });
   el.next.addEventListener('click', function () { move(1); });
 
