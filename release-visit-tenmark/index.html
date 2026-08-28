@@ -152,7 +152,12 @@
     transition:opacity .3s ease,filter .3s ease;
     width:100%;flex:1 1 auto;display:flex;justify-content:center;align-items:center;
   }
-  .side.is-dim .device-wrap{opacity:.4;filter:grayscale(1);}
+  /* ! The waiting side is still the point of a relay - on most steps it is the
+   * ! screen the reviewer wants to read (what the customer sees while the agent
+   * ! verifies). It reads as secondary, not switched off. Brief asked for
+   * ! opacity .4 + grayscale(1); that buried real screens once they went in. */
+  .side.is-dim .device-wrap{opacity:.72;filter:grayscale(.45);}
+  .side.is-dim .side-label{color:var(--ink-3);}
 
   /* phone */
   .phone{
@@ -421,8 +426,16 @@
     <h3>Export list</h3>
     <p class="sub">
       Every screen this walkthrough looks for, the Figma frame it comes from, and its node id. Frames are named
-      <code>platform/gold-loan/release-visit/module/screen--state</code>. Rows in red have no node id: either the
-      screen is not designed yet, or the frame exists but its id has not been filled in here.
+      <code>platform/gold-loan/release-visit/module/screen--state</code>, with a handful named ad hoc
+      (<code>View details</code>, <code>Release Gold Items</code>). Rows in red have no node id, meaning the
+      screen has not been designed yet.
+    </p>
+    <p class="sub">
+      The four sections hold <strong>116 top-level children</strong>: 5 annotation groups, 88 unique screens, and
+      23 duplicate placements - the same frame dropped twice, or a source-library copy sitting beside the screen
+      it feeds (the <code>px-app/onboarding/&hellip;</code> OTP and liveliness frames in the customer section are
+      byte-identical to the <code>cx-app</code> ones next to them). Duplicates are deliberately not listed
+      below.
     </p>
     <div class="tablewrap">
       <table>
@@ -486,6 +499,8 @@
     'px-handover-photo': {frame:'px-app/gold-loan/release-visit/handover/release-proof-upload--empty', node:'2055:55256'},
     'px-handover-captured': {frame:'px-app/gold-loan/release-visit/handover/release-proof-upload--captured', node:'2055:55302'},
     'px-complete': {frame:'px-app/gold-loan/release-visit/handover/visit-complete--default', node:'2055:55348'},
+    'px-view-details': {frame:'View details', node:'2103:71284'},
+    'px-release-gold-items': {frame:'Release Gold Items', node:'2103:71340'},
     'px-tp-visits-listing': {frame:'px-app/gold-loan/release-visit/third-party/visits-listing--default', node:'2055:55874'},
     'px-tp-visit-unassigned': {frame:'px-app/gold-loan/release-visit/third-party/visit-detail--unassigned', node:'2055:55774'},
     'px-tp-visit-assigned': {frame:'px-app/gold-loan/release-visit/third-party/visit-detail--assigned', node:'2055:55821'},
@@ -506,6 +521,7 @@
     'px-tp-photo': {frame:'px-app/gold-loan/release-visit/third-party/release-proof-upload--empty', node:'2055:59405'},
     'px-tp-photo-captured': {frame:'px-app/gold-loan/release-visit/third-party/release-proof-upload--captured', node:'2055:59418'},
     'px-tp-complete': {frame:'px-app/gold-loan/release-visit/third-party/visit-complete--default', node:'2055:59431'},
+    'px-tp-visit-details': {frame:'Visit details', node:'2084:67405'},
 
     /* --- customer app (Oromoney) --- */
     'cx-home': {frame:'cx-app/gold-loan/release-visit/visit-scheduling/home--default', node:'2040:48535'},
@@ -527,6 +543,7 @@
     'cx-collect': {frame:'cx-app/gold-loan/release-visit/handover/collect-gold--default', node:'2055:59955'},
     'cx-complete': {frame:'cx-app/gold-loan/release-visit/handover/visit-complete--default', node:'2040:48510'},
     'cx-visit-started-alt': {frame:'cx-app/release-visit--started', node:'2055:60817'},
+    'cx-esign-failed': {frame:'cx-app/home/beagle-gl--esign-failed', node:'2098:70805'},
 
     /* --- Tenmark CORE (web back-office) --- */
     'core-visits-listing': {frame:'web/gold-loan/release-visit/visits-listing/visit-listing--default', node:'2055:62550'},
@@ -542,6 +559,7 @@
     'core-approved': {frame:'web/gold-loan/release-visit/third-party-approval/approval-detail--approved', node:'2055:64537'},
     'core-reject-confirm': {frame:'web/gold-loan/release-visit/third-party-approval/approval-detail--reject-confirm', node:'2055:61821'},
     'core-rejected': {frame:'web/gold-loan/release-visit/third-party-approval/approval-detail--rejected', node:'2055:65029'},
+    'core-mismatch-table': {frame:'Frame 1484582447 (mismatch table)', node:'2099:70858'},
 
     /* --- customer app (Oromoney) --- */
     'cx-on-hold': {frame:'cx-app/gold-loan/release-visit/blocked/visit--on-hold', node:null, designed:false},
@@ -661,6 +679,18 @@
        title:'Captured and attached',
        body:'Stored against the visit tagged with the role of the person in frame.',
        left:'px-handover-captured', right:'cx-collect'},
+      {id:'view-details', actor:'agent', state:'Visit Started',
+       title:'The visit record the agent works from',
+       body:'Customer, loan, branch and the gold items pledged against it - the reference the agent checks everything else against.',
+       left:'px-view-details', right:'cx-visit-partner'},
+      {id:'release-gold-items', actor:'agent', state:'Gold Verified',
+       title:'Release gold items',
+       body:'The handover sheet: every verified item, ready to be handed over.',
+       left:'px-release-gold-items', right:'cx-gold-wait'},
+      {id:'esign-failed', actor:'customer', state:'eSign In Progress', fail:true,
+       title:'When Leegality fails',
+       body:'The customer gets a retry path, CORE and the partner app show the failure state, and the visit is not marked complete.',
+       left:'px-esign-progress', right:'cx-esign-failed'},
       {id:'complete', actor:'both', state:'Completed',
        title:'Closed on both sides',
        body:'Verification outcomes, the signed document, the receipt confirmation and the handover photo all sit on the visit record.',
@@ -772,6 +802,10 @@
        title:'Captured',
        body:'Stored against the visit, tagged with that role.',
        left:'px-tp-photo-captured', right:'cx-collect'},
+      {id:'tp-visit-details', actor:'agent', state:'Third Party Documents Pending',
+       title:'The third party visit record',
+       body:'What the approver in CORE will see: identity details and the document set against the visit.',
+       left:'px-tp-visit-details', right:'cx-gold-wait'},
       {id:'tp-complete', actor:'both', state:'Completed',
        title:'Closed with documents, not a signature',
        body:'No eSign artefact and no generated release letter exists for this visit.',
@@ -866,6 +900,10 @@
        title:'A flagged item in the mismatch table',
        body:'Flagged items surface here with reason and remarks. Visible to anyone with access to the page - no dedicated permission gates it.',
        left:'px-verify-blocked', right:'core-item-damage'},
+      {id:'core-mismatch', actor:'core', state:'Release Visit Blocked', fail:true,
+       title:'The mismatch table',
+       body:'A new table in CORE listing the loan, the visit and each flagged item with its reason and remarks. No dedicated permission gates it.',
+       left:'px-verify-blocked', right:'core-mismatch-table'},
       {id:'core-log', actor:'core', state:'Completed',
        title:'Activity log',
        body:'Every state change is written server side and readable here.',
