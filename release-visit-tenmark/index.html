@@ -79,6 +79,14 @@
   .paths button[aria-pressed="true"]{background:var(--accent);color:#fff;}
   .paths button:hover:not([aria-pressed="true"]){background:var(--accent-soft);color:var(--accent-deep);}
 
+  .switches{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:24px;}
+  .switches .paths{margin-bottom:0;}
+
+  /* CORE section: one browser, no phones and no connector */
+  .stage.is-core{grid-template-columns:1fr;}
+  .stage.is-core #side-left,.stage.is-core .connector{display:none;}
+  .stage.is-core .browser{max-width:1000px;}
+
   /* ---------- stage ---------- */
   .stage{
     position:relative;display:grid;grid-template-columns:1fr auto 1fr;align-items:stretch;
@@ -191,25 +199,6 @@
   .docset button:hover:not([aria-pressed="true"]){border-color:var(--accent);color:var(--accent-deep);}
 
   /* ---------- caption ---------- */
-  .caption{
-    display:grid;grid-template-columns:1fr 250px;gap:24px;align-items:start;
-    margin-top:24px;padding:24px 28px;background:var(--panel);border:1px solid var(--rule);border-radius:18px;
-  }
-  .caption h2{
-    font-family:var(--display);font-weight:700;font-size:clamp(22px,3vw,31px);
-    line-height:1.08;letter-spacing:-.025em;margin:0 0 8px;text-wrap:balance;
-  }
-  .caption p{margin:0;color:var(--ink-2);font-size:15.5px;max-width:60ch;}
-
-  .statecard{
-    background:var(--accent-soft);border:1px solid #CFDAFA;border-radius:12px;padding:14px 15px;
-    display:flex;flex-direction:column;gap:10px;
-  }
-  .statecard .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-deep);opacity:.75;}
-  .statecard .v{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--accent-deep);line-height:1.35;}
-  .statecard .actor{font-family:var(--body);font-weight:700;font-size:14px;color:var(--ink);}
-  .statecard.is-fail{background:var(--red-soft);border-color:#F3CFCB;}
-  .statecard.is-fail .k,.statecard.is-fail .v{color:var(--red);}
 
   /* ---------- rail + nav ---------- */
   .navrow{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start;margin-top:20px;}
@@ -235,29 +224,10 @@
   .counter{font-family:var(--mono);font-size:11.5px;color:var(--ink-3);align-self:center;}
 
   /* ---------- export table ---------- */
-  .exports{margin-top:60px;}
-  .exports h3{font-family:var(--display);font-weight:700;font-size:26px;letter-spacing:-.02em;margin:0 0 8px;}
-  .exports .sub{color:var(--ink-2);font-size:15px;margin:0 0 18px;max-width:72ch;}
-  .tablewrap{overflow-x:auto;border:1px solid var(--rule);border-radius:14px;background:var(--panel);}
-  table{border-collapse:collapse;width:100%;min-width:520px;font-family:var(--mono);font-size:12px;}
-  th,td{text-align:left;padding:9px 14px;border-bottom:1px solid var(--rule);vertical-align:top;}
-  th{
-    font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-3);
-    background:#F1F5FC;font-weight:500;white-space:nowrap;
-  }
-  tbody tr:last-child td{border-bottom:0;}
-  td.file{color:var(--ink);font-weight:500;}
-  td.node{white-space:nowrap;}
-  tr.no-node td{color:var(--red);}
-  .grp td{background:#F8FAFE;font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-3);}
-
-  footer{margin-top:40px;color:var(--ink-3);font-size:13px;max-width:74ch;}
-  footer code{font-family:var(--mono);font-size:12px;color:var(--ink-2);}
 
   @media (max-width:960px){
     .stage{grid-template-columns:1fr;gap:26px;padding:24px 16px;}
     .connector{display:none;}
-    .caption{grid-template-columns:1fr;}
   }
   @media (prefers-reduced-motion:reduce){
     *{transition:none !important;animation:none !important;}
@@ -270,20 +240,17 @@
   <header>
     <p class="eyebrow">ENG-4953 · walkthrough prototype</p>
     <h1>Release visit, <span class="hl">relayed</span> between two phones</h1>
-    <p class="lede">
-      The Tenmark gold loan release runs as a handoff: a branch agent in the partner app, the customer in
-      Oromoney, and Tenmark CORE for third party approval. Whichever side has to act is lit; the other waits.
-    </p>
-    <p class="meta">
-      <span><a href="https://linear.app/orocorp/issue/ENG-4953/release-visit-revamp-tenmark-gold-loans">ENG-4953</a></span>
-      <span>figma T5JDdFqTJVi2pgTGeCzU3S</span>
-      <span id="meta-count"></span>
-    </p>
   </header>
 
-  <div class="paths" role="group" aria-label="Release path">
-    <button type="button" data-path="regular" aria-pressed="true">Regular release</button>
-    <button type="button" data-path="tp" aria-pressed="false">Third party release</button>
+  <div class="switches">
+    <div class="paths" role="group" aria-label="Surface">
+      <button type="button" data-section="apps" aria-pressed="true">Apps</button>
+      <button type="button" data-section="core" aria-pressed="false">Tenmark CORE</button>
+    </div>
+    <div class="paths" role="group" aria-label="Release path">
+      <button type="button" data-path="regular" aria-pressed="true">Regular release</button>
+      <button type="button" data-path="tp" aria-pressed="false">Third party release</button>
+    </div>
   </div>
 
   <section class="stage" aria-label="Screens for this step">
@@ -305,17 +272,6 @@
     </div>
   </section>
 
-  <section class="caption" aria-live="polite">
-    <div>
-      <h2 id="cap-title"></h2>
-      <p id="cap-body"></p>
-    </div>
-    <div class="statecard" id="statecard">
-      <div><div class="k">Visit state</div><div class="v" id="cap-state"></div></div>
-      <div><div class="k">Acting</div><div class="actor" id="cap-actor"></div></div>
-    </div>
-  </section>
-
   <nav class="navrow" aria-label="Steps">
     <div class="rail" id="rail"></div>
     <div class="steppers">
@@ -325,28 +281,6 @@
     <span class="counter" id="counter"></span>
   </nav>
 
-  <section class="exports">
-    <h3>Export list</h3>
-    <p class="sub">
-      Every screen this walkthrough looks for and the Figma frame node it came from, exported at 2x from
-      <code>T5JDdFqTJVi2pgTGeCzU3S</code>. Rows in red have no node id: the screen is not designed yet.
-    </p>
-    <div class="tablewrap">
-      <table>
-        <thead><tr><th>Filename</th><th>Node id</th></tr></thead>
-        <tbody id="export-rows"></tbody>
-      </table>
-    </div>
-  </section>
-
-  <footer>
-    <p>
-      Screens live in <code>screens/</code>, named exactly as the filename column, for example
-      <code>screens/px-pickup.png</code>. Anything missing shows a striped placeholder naming the path it
-      looked for, so gaps stay visible rather than silently blank.
-    </p>
-  </footer>
-
 </div>
 
 <script>
@@ -354,6 +288,9 @@
   'use strict';
 
   var DIR = 'screens/';
+  // ! Bump when screens are re-exported, so a stale browser cache cannot show
+  // ! the previous export under the same filename.
+  var BUILD = '2026-08-28a';
 
   /* key -> Figma frame node id. null means never designed. */
   var SCREENS = {
@@ -443,12 +380,6 @@
     'core-log-third-party':'2127:52887'
   };
 
-  var GROUPS = [
-    {name:'Partner app - regular path', test:function(k){return k.indexOf('px-')===0;}},
-    {name:'Partner app - third party path', test:function(k){return k.indexOf('tp-')===0;}},
-    {name:'Oromoney - customer app', test:function(k){return k.indexOf('cx-')===0;}},
-    {name:'Tenmark CORE - web', test:function(k){return k.indexOf('core-')===0;}}
-  ];
 
   /* actor: agent | customer | both | core */
   var SHARED = [
@@ -508,7 +439,7 @@
      d:'The handover sheet: every verified item, ready to be released.'}
   ];
 
-  var FLOWS = {
+  var APPS = {
     regular: SHARED.concat([
       {id:'esign-start', a:'px-esign-progress', b:'cx-esign-start', actor:'customer', state:'eSign In Progress',
        t:'The customer signs on their own phone',
@@ -574,15 +505,12 @@
       {id:'tp-docs-confirm', a:'tp-docs-confirm', b:'cx-gold-wait', actor:'agent', state:'Third Party Documents Pending',
        t:'Partial sets cannot be submitted',
        d:'A failed or missing upload blocks submission for approval.'},
-      {id:'tp-pending-docs', a:'tp-pending', b:'core-approval-documents', actor:'core', state:'Pending Third Party Approval',
-       t:'CORE. The only step measured in days',
-       d:'The approver holding Approve Third Party Release sees the identity details and every uploaded document. Nothing is uploaded from here.'},
-      {id:'tp-approve-confirm', a:'tp-pending', b:'core-approve-confirm', actor:'core', state:'Pending Third Party Approval',
-       t:'CORE. A reason is required either way',
-       d:'Approval and rejection are both recorded against the visit with actor, reason and timestamp.'},
-      {id:'tp-approved', a:'tp-approved', b:'core-approved', actor:'core', state:'Third Party Approved',
+      {id:'tp-pending', a:'tp-pending', b:'cx-gold-wait', actor:'agent', state:'Pending Third Party Approval',
+       t:'Submitted, and now it waits on CORE',
+       d:'The only step measured in days. Nothing moves in the app until Tenmark Central Operations decides - see the CORE section for that half.'},
+      {id:'tp-approved', a:'tp-approved', b:'cx-gold-wait', actor:'agent', state:'Third Party Approved',
        t:'Cleared to hand over',
-       d:'The visit moves to Third Party Approved and the release can be processed.'},
+       d:'The approval lands back in the partner app and the release can be processed.'},
       {id:'tp-receipt', a:'px-wait-receipt', b:'cx-collect', actor:'customer', state:'Receipt Confirmed',
        t:'Still the customer own login, even in death cases',
        d:'A stated accepted risk, not an oversight. The controlling evidence here is the document set, the approval and the handover photo.'},
@@ -596,17 +524,48 @@
        t:'No signature artefact exists on this path',
        d:'The paper trail is the approved document set, the approval reason and the handover photo.'},
 
-      {id:'tp-reject-confirm', a:'tp-pending', b:'core-reject-confirm', actor:'core', state:'Pending Third Party Approval', fail:true,
-       t:'CORE',
-       d:'Rejection runs through the same surface as approval.'},
-      {id:'tp-reject-reason', a:'tp-pending', b:'core-reject-reason', actor:'core', state:'Pending Third Party Approval', fail:true,
-       t:'CORE. Rejection reason recorded',
-       d:'The reason is mandatory and is written against the visit with the approver identity.'},
-      {id:'tp-rejected', a:'tp-rejected-px', b:'core-rejected', actor:'core', state:'Third Party Rejected', fail:true,
+      {id:'tp-rejected', a:'tp-rejected-px', b:'cx-gold-wait', actor:'agent', state:'Third Party Rejected', fail:true,
        t:'Visit closes. Payment and ledger untouched. The customer books again from zero',
        d:'Fresh pickup, fresh code, fresh live photo, fresh verification - and either path may be chosen next time. There is no cap on rescheduling.'}
     ])
   };
+
+  var CORE = {
+    regular: [
+      {id:'visits-listing', b:'core-visit-listing', state:'Visit Confirmed',
+       t:'The release visits queue', d:'CORE is visibility, the mismatch table and third party approval. The visit is not worked here.'},
+      {id:'visit-detail', b:'core-visit-detail', state:'Visit Started',
+       t:'A visit in CORE', d:'Everything recorded against the release, read-only for most roles.'},
+      {id:'gold-items', b:'core-gold-items', state:'Gold Verified',
+       t:'The gold items and their outcomes', d:'Item-level status, reason, remarks, agent identity and timestamp, as submitted from the partner app.'},
+      {id:'item-detail', b:'core-item-detail', state:'Gold Verified',
+       t:'One item, in full', d:'The valuation record beside what the agent recorded on the day.'},
+      {id:'item-flagged', b:'core-item-flagged', state:'Release Visit Blocked', fail:true,
+       t:'A flagged item in the mismatch table', d:'Flagged items surface here with reason and remarks. Visible to anyone with access to the page - no dedicated permission gates it.'},
+      {id:'activity-log', b:'core-activity-log', state:'Completed',
+       t:'Activity log', d:'Every state change is written server side and readable here.'},
+      {id:'log-regular', b:'core-log-regular', state:'Completed',
+       t:'The regular release, end to end', d:'The full trail for a visit that closed on eSign and handover.'}
+    ],
+    tp: [
+      {id:'approval-documents', b:'core-approval-documents', state:'Pending Third Party Approval',
+       t:'The only step measured in days', d:'The approver holding Approve Third Party Release sees the identity details and every uploaded document. Nothing is uploaded from here.'},
+      {id:'approve-confirm', b:'core-approve-confirm', state:'Pending Third Party Approval',
+       t:'A reason is required either way', d:'Approval and rejection are both recorded against the visit with actor, reason and timestamp.'},
+      {id:'approved', b:'core-approved', state:'Third Party Approved',
+       t:'Approved', d:'The visit moves to Third Party Approved and handover can proceed.'},
+      {id:'reject-confirm', b:'core-reject-confirm', state:'Pending Third Party Approval', fail:true,
+       t:'Rejecting runs through the same surface', d:'Same screen, opposite outcome.'},
+      {id:'reject-reason', b:'core-reject-reason', state:'Pending Third Party Approval', fail:true,
+       t:'Rejection reason recorded', d:'Mandatory, and written against the visit with the approver identity.'},
+      {id:'rejected', b:'core-rejected', state:'Third Party Rejected', fail:true,
+       t:'Visit closes, payment and ledger untouched', d:'The customer returns to the schedule stage and books again from zero, on either path.'},
+      {id:'log-third-party', b:'core-log-third-party', state:'Third Party Rejected',
+       t:'The third party trail', d:'Documents, approval or rejection reason, and the handover photo.'}
+    ]
+  };
+
+  var SECTIONS = {apps: APPS, core: CORE};
 
   var DOCSETS = [
     {key:'tp-docs-death', label:'death case'},
@@ -615,17 +574,16 @@
     {key:'tp-docs-sick', label:'sick'}
   ];
 
-  var ACTOR = {agent:'Tenmark branch agent', customer:'Customer, in Oromoney', both:'Both sides', core:'Tenmark Central Operations'};
   var HANDOFF = {agent:'agent acts, customer waits', customer:'customer acts, agent waits', both:'both sides live', core:'agent waits, CORE decides'};
 
-  var state = {path:'regular', index:0, docset:0};
+  var state = {section:'apps', path:'regular', index:0, docset:0};
 
   var el = {};
-  ['left-device','right-device','side-left','side-right','right-label','handoff','cap-title','cap-body',
-   'cap-state','cap-actor','statecard','rail','prev','next','counter','export-rows','meta-count','docset']
+  ['left-device','right-device','side-left','side-right','right-label','handoff',
+   'rail','prev','next','counter','docset']
     .forEach(function (id) { el[id] = document.getElementById(id); });
 
-  function steps(){ return FLOWS[state.path]; }
+  function steps(){ return SECTIONS[state.section][state.path]; }
   function step(){ return steps()[state.index]; }
 
   function placeholder(kind, key) {
@@ -652,7 +610,7 @@
     var img = document.createElement('img');
     img.className = 'shot';
     img.alt = key;
-    img.src = DIR + key + '.png';
+    img.src = DIR + key + '.png?v=' + BUILD;
     img.addEventListener('error', function () {
       if (img.parentNode) img.parentNode.replaceChild(placeholder('missing', key), img);
     });
@@ -709,28 +667,27 @@
 
   function render() {
     var s = step();
-    var isCore = s.actor === 'core';
+    var isCore = state.section === 'core';
     var leftKey = s.docset ? DOCSETS[state.docset].key : s.a;
+
+    document.querySelector('.stage').className = 'stage' + (isCore ? ' is-core' : '');
 
     el['left-device'].textContent = '';
     el['right-device'].textContent = '';
-    el['left-device'].appendChild(tappable(phone(leftKey)));
+    if (!isCore) el['left-device'].appendChild(tappable(phone(leftKey)));
     el['right-device'].appendChild(tappable(isCore ? browser(s.b) : phone(s.b)));
 
     el['right-label'].textContent = isCore ? 'Tenmark CORE' : 'Oromoney';
 
-    var leftOn = s.actor === 'agent' || s.actor === 'both';
-    var rightOn = s.actor === 'customer' || s.actor === 'both' || isCore;
-    el['side-left'].className = 'side ' + (leftOn ? 'is-active' : 'is-dim');
-    el['side-right'].className = 'side ' + (rightOn ? 'is-active' : 'is-dim');
-
-    el.handoff.textContent = HANDOFF[s.actor];
-    el['cap-title'].textContent = s.t;
-    el['cap-body'].textContent = s.d;
-    el['cap-state'].textContent = s.state;
-    el['cap-actor'].textContent = ACTOR[s.actor];
-    el.statecard.className = 'statecard' + (s.fail ? ' is-fail' : '');
-
+    if (!isCore) {
+      var leftOn = s.actor === 'agent' || s.actor === 'both';
+      var rightOn = s.actor === 'customer' || s.actor === 'both';
+      el['side-left'].className = 'side ' + (leftOn ? 'is-active' : 'is-dim');
+      el['side-right'].className = 'side ' + (rightOn ? 'is-active' : 'is-dim');
+      el.handoff.textContent = HANDOFF[s.actor];
+    } else {
+      el['side-right'].className = 'side is-active';
+    }
     if (s.docset) { el.docset.hidden = false; buildDocset(); } else { el.docset.hidden = true; }
 
     Array.prototype.forEach.call(el.rail.children, function (b, i) {
@@ -753,13 +710,17 @@
     });
   }
 
-  function setPath(p) {
-    state.path = p; state.index = 0;
-    Array.prototype.forEach.call(document.querySelectorAll('.paths button'), function (b) {
-      b.setAttribute('aria-pressed', String(b.getAttribute('data-path') === p));
+  function sync() {
+    Array.prototype.forEach.call(document.querySelectorAll('[data-section]'), function (b) {
+      b.setAttribute('aria-pressed', String(b.getAttribute('data-section') === state.section));
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-path]'), function (b) {
+      b.setAttribute('aria-pressed', String(b.getAttribute('data-path') === state.path));
     });
     buildRail(); render();
   }
+  function setSection(x) { state.section = x; state.index = 0; sync(); }
+  function setPath(p) { state.path = p; state.index = 0; sync(); }
 
   function move(n) {
     var i = state.index + n;
@@ -767,28 +728,11 @@
     state.index = i; render();
   }
 
-  function buildTable() {
-    var keys = Object.keys(SCREENS), missing = 0;
-    GROUPS.forEach(function (g) {
-      var ks = keys.filter(g.test);
-      if (!ks.length) return;
-      var h = document.createElement('tr'); h.className = 'grp';
-      var hc = document.createElement('td'); hc.colSpan = 2; hc.textContent = g.name;
-      h.appendChild(hc); el['export-rows'].appendChild(h);
-      ks.forEach(function (k) {
-        var tr = document.createElement('tr');
-        if (!SCREENS[k]) { tr.className = 'no-node'; missing++; }
-        var f = document.createElement('td'); f.className = 'file'; f.textContent = k + '.png';
-        var n = document.createElement('td'); n.className = 'node';
-        n.textContent = SCREENS[k] || 'not designed';
-        tr.appendChild(f); tr.appendChild(n);
-        el['export-rows'].appendChild(tr);
-      });
-    });
-    el['meta-count'].textContent = keys.length + ' screens · ' + missing + ' never designed';
-  }
 
-  Array.prototype.forEach.call(document.querySelectorAll('.paths button'), function (b) {
+  Array.prototype.forEach.call(document.querySelectorAll('[data-section]'), function (b) {
+    b.addEventListener('click', function () { setSection(b.getAttribute('data-section')); });
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-path]'), function (b) {
     b.addEventListener('click', function () { setPath(b.getAttribute('data-path')); });
   });
   el.prev.addEventListener('click', function () { move(-1); });
@@ -800,8 +744,7 @@
     else if (e.key === 'ArrowLeft') move(-1);
   });
 
-  buildTable();
-  setPath('regular');
+  sync();
 })();
 </script>
 </body>
