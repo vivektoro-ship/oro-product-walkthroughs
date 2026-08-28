@@ -431,11 +431,14 @@
       screen has not been designed yet.
     </p>
     <p class="sub">
-      The four sections hold <strong>116 top-level children</strong>: 5 annotation groups, 88 unique screens, and
-      23 duplicate placements - the same frame dropped twice, or a source-library copy sitting beside the screen
-      it feeds (the <code>px-app/onboarding/&hellip;</code> OTP and liveliness frames in the customer section are
-      byte-identical to the <code>cx-app</code> ones next to them). Duplicates are deliberately not listed
-      below.
+      The four sections hold <strong>116 top-level children</strong>: 5 annotation groups and 111 screen frames.
+      Those 111 frames resolve to <strong>79 distinct screens</strong> - 88 are wired below and the other 23 are
+      duplicate placements, either the same frame dropped twice or a source-library copy sitting beside the
+      screen it feeds (the <code>px-app/onboarding/&hellip;</code> OTP and liveliness frames in the customer
+      section are byte-identical to the <code>cx-app</code> ones next to them). Nine of the 88 wired frames are
+      themselves byte-identical pairs, because the designer reused one frame across both paths - the handover
+      photo, visit-complete and waiting-for-receipt screens are the same file in the regular and third party
+      sections.
     </p>
     <div class="tablewrap">
       <table>
@@ -802,10 +805,6 @@
        title:'Captured',
        body:'Stored against the visit, tagged with that role.',
        left:'px-tp-photo-captured', right:'cx-collect'},
-      {id:'tp-visit-details', actor:'agent', state:'Third Party Documents Pending',
-       title:'The third party visit record',
-       body:'What the approver in CORE will see: identity details and the document set against the visit.',
-       left:'px-tp-visit-details', right:'cx-gold-wait'},
       {id:'tp-complete', actor:'both', state:'Completed',
        title:'Closed with documents, not a signature',
        body:'No eSign artefact and no generated release letter exists for this visit.',
@@ -880,10 +879,6 @@
        title:'The release visits queue',
        body:'Tenmark CORE holds third party approval, the mismatch table and the signed document view. It is not where the visit is worked.',
        left:'px-visits-listing', right:'core-visits-listing'},
-      {id:'core-all', actor:'core', state:'Visit Confirmed',
-       title:'All visits',
-       body:'The full list across states, for monitoring rather than action.',
-       left:'px-visits-listing', right:'core-visits-all'},
       {id:'core-detail', actor:'core', state:'Visit Started',
        title:'A visit in CORE',
        body:'Everything recorded against the release, read-only for most roles.',
