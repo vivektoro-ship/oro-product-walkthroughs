@@ -173,9 +173,14 @@
   .phone-screen{
     width:100%;height:100%;
     border-radius:26px;
-    overflow:hidden;
+    /* ! Exports run from 835 to 1176 tall against a 390x844 frame. Rather than
+     * ! stretching the device or cropping the screen, the screen scrolls inside
+     * ! the frame the way it would on the handset. */
+    overflow-y:auto;
+    overflow-x:hidden;
     background:var(--page);
     position:relative;
+    scrollbar-width:thin;
   }
 
   /* browser */
@@ -198,10 +203,10 @@
     color:#9AA1B8;background:#22283C;border-radius:5px;padding:2px 9px;
   }
   .browser-screen{
-    flex:1 1 auto;border-radius:8px;overflow:hidden;background:var(--page);position:relative;
+    flex:1 1 auto;border-radius:8px;overflow-y:auto;overflow-x:hidden;background:var(--page);position:relative;scrollbar-width:thin;
   }
 
-  .shot{width:100%;height:100%;object-fit:cover;object-position:top center;display:block;}
+  .shot{width:100%;height:auto;display:block;}
 
   /* the device itself advances the flow */
   .tapzone{cursor:pointer;position:relative;}
@@ -475,6 +480,8 @@
     'px-pickup': {frame:'px-app/gold-loan/release-visit/pickup/visit-detail--unassigned', node:'2040:43426'},
     'px-pickup-taken': {frame:'px-app/gold-loan/release-visit/pickup/visit-detail--already-started', node:'2040:50485'},
     'px-pickup-assigned': {frame:'px-app/gold-loan/release-visit/pickup/visit-detail--assigned', node:'2040:43560'},
+    'px-self-assigned': {frame:'px-app/gold-loan/release-visit/pickup/visit-detail--unassigned (self-assigned sheet)', node:'2099:70966'},
+    'px-pickup-variant': {frame:'px-app/gold-loan/release-visit/pickup/visit-detail--unassigned (resume visit)', node:'2103:71591'},
     'px-release-type': {frame:'px-app/gold-loan/release-visit/release-type/release-type-select--default', node:'2040:50657'},
     'px-show-code': {frame:'px-app/gold-loan/release-visit/customer-verification/verification-code--default', node:'2040:50600'},
     'px-wait-photo': {frame:'px-app/gold-loan/release-visit/customer-verification/liveliness-status--in-progress', node:'2040:51715'},
@@ -524,6 +531,9 @@
     'px-tp-photo': {frame:'px-app/gold-loan/release-visit/third-party/release-proof-upload--empty', node:'2055:59405'},
     'px-tp-photo-captured': {frame:'px-app/gold-loan/release-visit/third-party/release-proof-upload--captured', node:'2055:59418'},
     'px-tp-complete': {frame:'px-app/gold-loan/release-visit/third-party/visit-complete--default', node:'2055:59431'},
+    'px-tp-identity-filled': {frame:'px-app/gold-loan/release-visit/third-party/third-party-details--empty (filled)', node:'2093:69872'},
+    'px-tp-view-details': {frame:'View details (third party)', node:'2103:71701'},
+    'px-tp-release-gold-items': {frame:'Release Gold Items (third party)', node:'2103:71757'},
     'px-tp-visit-details': {frame:'Visit details', node:'2084:67405'},
 
     /* --- customer app (Oromoney) --- */
@@ -586,6 +596,14 @@
        title:'The first agent to act owns the visit',
        body:'There is no assigner. Whoever taps Start Visit claims it for its lifetime - no takeover, no reassignment, enforced server side.',
        left:'px-pickup', right:'cx-visit-no-partner'},
+      {id:'self-assigned', actor:'agent', state:'Visit Started',
+       title:'Visit self-assigned',
+       body:'The confirmation the owning agent gets. From here the visit is theirs for its lifetime.',
+       left:'px-self-assigned', right:'cx-visit-partner'},
+      {id:'resume-visit', actor:'agent', state:'Visit Started',
+       title:'Coming back to a visit in progress',
+       body:'The owner reopening a visit they already started - Resume Visit rather than Start Visit. The ticket requires an abandoned visit to stay open at its step and be resumable on the same visit.',
+       left:'px-pickup-variant', right:'cx-visit-partner'},
       {id:'already-started', actor:'agent', state:'Visit Started', fail:true,
        title:'Everyone else sees who took it',
        body:'The same visit opened by a second agent. The action is replaced by the owner name: Visit initiated by <agent name>.',
@@ -745,6 +763,18 @@
        title:'Identity captured as data, not as a scan',
        body:'Full name, relationship to the customer, PAN, Aadhaar and mobile number - typed in, alongside the KYC uploads rather than instead of them.',
        left:'px-tp-identity', right:'cx-gold-wait'},
+      {id:'tp-identity-filled', actor:'agent', state:'Third Party Documents Pending',
+       title:'Identity details filled in',
+       body:'The same five fields, completed - what the CORE approver will read alongside the documents.',
+       left:'px-tp-identity-filled', right:'cx-gold-wait'},
+      {id:'tp-view-details', actor:'agent', state:'Third Party Documents Pending',
+       title:'The third party visit record',
+       body:'The visit as the agent sees it on this path. Near-identical to the regular one, but a separate frame in Figma.',
+       left:'px-tp-view-details', right:'cx-gold-wait'},
+      {id:'tp-gold-items', actor:'agent', state:'Third Party Approved',
+       title:'Release gold items, third party',
+       body:'The handover sheet on this path, again a separate frame from the regular one.',
+       left:'px-tp-release-gold-items', right:'cx-gold-wait'},
       {id:'tp-category', actor:'agent', state:'Third Party Documents Pending',
        title:'Four reasons, two different document sets',
        body:'Death case, customer missing, customer abroad or out of city, customer sick or hospitalised.',
@@ -1014,14 +1044,6 @@
     img.className = 'shot';
     img.alt = meta.frame;
     img.src = SCREEN_DIR + key + '.png';
-    // ! Exports are taller than a stock phone (2.16 vs up to 2.51), so the frame
-    // ! takes its ratio from the file rather than cropping the bottom off.
-    img.addEventListener('load', function () {
-      var frame = img.closest('.phone') || img.closest('.browser');
-      if (frame && img.naturalWidth && img.naturalHeight) {
-        frame.style.aspectRatio = img.naturalWidth + '/' + img.naturalHeight;
-      }
-    });
     img.addEventListener('error', function () {
       if (img.parentNode) img.parentNode.replaceChild(placeholder('missing', key), img);
     });
@@ -1066,7 +1088,11 @@
     node.tabIndex = 0;
     node.setAttribute('role', 'button');
     node.setAttribute('aria-label', 'Next step');
-    node.addEventListener('click', function () { move(1); });
+    node.addEventListener('click', function (e) {
+      // ! Ignore the click that ends a drag-scroll inside the screen.
+      if (window.getSelection && String(window.getSelection())) return;
+      move(1);
+    });
     node.addEventListener('keydown', function (e) {
       if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
         e.preventDefault();
