@@ -1,0 +1,21 @@
+# Static walkthrough site — no build step, publish the repo root as-is.
+[build]
+  publish = "."
+  command = "echo 'static site — nothing to build'"
+
+# Netlify's asset optimisation must stay off: these walkthrough HTML files are
+# tens of MB of inlined markup and minifying/rewriting them breaks the prototype.
+[build.processing]
+  skip_processing = true
+
+# HTML always revalidates so a redeploy is visible immediately.
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# Screenshots are content-stable — cache them hard.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
