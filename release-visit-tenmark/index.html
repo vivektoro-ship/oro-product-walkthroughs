@@ -201,18 +201,7 @@
   /* ---------- caption ---------- */
 
   /* ---------- rail + nav ---------- */
-  .navrow{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start;margin-top:20px;}
-  .rail{display:flex;flex-wrap:wrap;gap:6px;flex:1 1 460px;min-width:0;}
-  .rail button{
-    font-family:var(--mono);font-size:11px;font-weight:500;color:var(--ink-2);background:var(--panel);
-    border:1px solid var(--rule);border-radius:7px;padding:6px 10px;cursor:pointer;
-    transition:background .16s ease,color .16s ease,border-color .16s ease;
-  }
-  .rail button:hover{border-color:var(--accent);color:var(--accent-deep);}
-  .rail button[aria-current="true"]{background:var(--accent);border-color:var(--accent);color:#fff;}
-  .rail button.is-fail{border-style:dashed;border-color:var(--rule-strong);color:var(--ink-3);}
-  .rail button.is-fail:hover{border-color:var(--red);color:var(--red);}
-  .rail button.is-fail[aria-current="true"]{background:var(--red);border-color:var(--red);color:#fff;}
+  .navrow{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:center;margin-top:20px;}
 
   .steppers{display:flex;gap:8px;}
   .steppers button{
@@ -273,7 +262,6 @@
   </section>
 
   <nav class="navrow" aria-label="Steps">
-    <div class="rail" id="rail"></div>
     <div class="steppers">
       <button type="button" id="prev">Back</button>
       <button type="button" id="next">Next</button>
@@ -580,7 +568,7 @@
 
   var el = {};
   ['left-device','right-device','side-left','side-right','right-label','handoff',
-   'rail','prev','next','counter','docset']
+   'prev','next','counter','docset']
     .forEach(function (id) { el[id] = document.getElementById(id); });
 
   function steps(){ return SECTIONS[state.section][state.path]; }
@@ -690,25 +678,11 @@
     }
     if (s.docset) { el.docset.hidden = false; buildDocset(); } else { el.docset.hidden = true; }
 
-    Array.prototype.forEach.call(el.rail.children, function (b, i) {
-      b.setAttribute('aria-current', i === state.index ? 'true' : 'false');
-    });
     el.prev.disabled = state.index === 0;
     el.next.disabled = state.index === steps().length - 1;
     el.counter.textContent = (state.index + 1) + ' / ' + steps().length;
   }
 
-  function buildRail() {
-    el.rail.textContent = '';
-    steps().forEach(function (s, i) {
-      var b = document.createElement('button');
-      b.type = 'button';
-      b.textContent = s.id;
-      if (s.fail) b.className = 'is-fail';
-      b.addEventListener('click', function () { state.index = i; render(); });
-      el.rail.appendChild(b);
-    });
-  }
 
   function sync() {
     Array.prototype.forEach.call(document.querySelectorAll('[data-section]'), function (b) {
@@ -717,7 +691,7 @@
     Array.prototype.forEach.call(document.querySelectorAll('[data-path]'), function (b) {
       b.setAttribute('aria-pressed', String(b.getAttribute('data-path') === state.path));
     });
-    buildRail(); render();
+    render();
   }
   function setSection(x) { state.section = x; state.index = 0; sync(); }
   function setPath(p) { state.path = p; state.index = 0; sync(); }

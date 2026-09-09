@@ -1,2 +1,5 @@
 # Local Netlify folder
 .netlify
+
+# Scratch capture assets - local only, never part of a deploy
+scratchpad/
