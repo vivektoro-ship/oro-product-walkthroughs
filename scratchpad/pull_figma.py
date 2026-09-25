@@ -88,6 +88,21 @@ RENEWAL_NODES = [
 ]
 
 
+# Kumbhat personal loan - section "Kumbhat PL Flow" 5194:202105, page
+# "Oro User App - Master". Main row left to right, with the two-screen
+# DigiLocker fallback (199679, 199749) spliced in where it branches off the
+# CKYC fetch.
+KUMBHAT_FILE = "YeLUqHZeddjjIEgdyUFAu4"
+KUMBHAT_NODES = [
+    "5194:199023", "5194:199815", "5194:199261", "5194:199337", "5194:199527",
+    "5194:199599", "5194:199413", "5194:199679", "5194:199749", "5194:199895",
+    "5194:199470", "5194:200685", "5194:199975", "5194:200668", "5194:198766",
+    "5194:198911", "5194:198590", "5194:198465", "5194:199000", "5194:200078",
+    "5194:200328", "5194:200348", "5194:200144", "5194:200294", "5194:200745",
+    "5194:200309", "5194:200229", "5194:200381", "5194:200449",
+]
+
+
 def slug(node_id):
     return node_id.replace(":", "-")
 
@@ -105,9 +120,15 @@ def renewal_manifest():
             for i, nid in enumerate(RENEWAL_NODES, start=1)]
 
 
+def kumbhat_manifest():
+    return [(nid, "kumb%02d-%s.png" % (i, slug(nid)))
+            for i, nid in enumerate(KUMBHAT_NODES, start=1)]
+
+
 JOBS = {
     "onboarding": (ONBOARDING_FILE, onboarding_manifest, "assets/onboarding"),
     "renewal": (RENEWAL_FILE, renewal_manifest, "assets/renewal"),
+    "kumbhat": (KUMBHAT_FILE, kumbhat_manifest, "assets/pl-kumbhat"),
 }
 
 
