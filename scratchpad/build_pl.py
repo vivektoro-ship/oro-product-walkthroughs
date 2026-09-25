@@ -26,8 +26,8 @@ PRODUCT = "Personal Loan"
 
 FLOWS = [
   {
-    "name": "Verify with the lender", "slug": "cx-pl-kyc", "kicker": "Lender check",
-    "blurb": "From the offer on your gold loan through the lender's identity and credit checks.",
+    "name": "Verify with TCPL", "slug": "cx-pl-kyc", "kicker": "Lender check",
+    "blurb": "From the offer on your gold loan through TCPL's identity and credit checks.",
     "steps": [
       ("pl01-4508-60994.png", "Start your personal loan",
        "Your gold loan page shows you are eligible for a personal loan on top of it. "
