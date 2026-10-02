@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>TCPL Release Visit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* Layout: masthead, journey overview, then three players (end to end, customer app, partner app), each with flow tabs */
+:root{
+  --page:#F6F8FC; --panel:#FFFFFF; --rule:#E3E8F2; --rule-strong:#CDD5E6;
+  --ink:#0E1220; --ink-soft:#4B556B; --ink-faded:#8590A6;
+  --accent:#2B50E8; --accent-deep:#1B39C4; --accent-soft:#E4EAFD;
+  --gold:#C99A2E; --gold-soft:#FBF3DF; --red:#D6392F; --red-soft:#FBE9E7; --green:#2E8B57; --green-soft:#E5F4EC;
+  --display:"Bricolage Grotesque",system-ui,sans-serif; --body:"Manrope",-apple-system,sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--page);color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased}
+.wrap{max-width:72rem;margin:0 auto;padding:0 20px}
+img{max-width:100%}
+
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:rgba(246,248,252,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--rule)}
+.topbar .inner{max-width:72rem;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:800;font-size:17px}
+.brand i{width:26px;height:26px;border-radius:7px;background:var(--accent);display:block}
+.topbar nav{margin-left:auto;display:flex;gap:4px;flex-wrap:wrap}
+.topbar nav a{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);text-decoration:none;padding:8px 10px;border-radius:8px}
+.topbar nav a:hover{background:var(--accent-soft);color:var(--accent-deep)}
+
+.mast{padding:64px 0 24px}
+.kicker{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent)}
+.mast h1{font-family:var(--display);font-weight:800;font-size:clamp(34px,6vw,60px);line-height:1.02;letter-spacing:-.02em;margin-top:14px;max-width:16ch;text-wrap:balance}
+.mast p{font-size:16.5px;line-height:1.6;color:var(--ink-soft);margin-top:18px;max-width:44rem}
+.facts{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+.facts span{font-family:var(--mono);font-size:11px;letter-spacing:.06em;background:var(--panel);border:1px solid var(--rule);border-radius:99px;padding:7px 13px;color:var(--ink-soft)}
+.facts b{color:var(--ink);font-weight:700}
+
+.sec{padding:56px 0 8px}
+.shead{display:flex;align-items:baseline;gap:14px;border-bottom:2px solid var(--ink);padding-bottom:12px;flex-wrap:wrap}
+.shead .k{font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent)}
+.shead h2{font-family:var(--display);font-weight:800;font-size:clamp(24px,3.4vw,34px);letter-spacing:-.015em}
+.shead .c{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faded);margin-left:auto}
+.lead{font-size:15.5px;line-height:1.6;color:var(--ink-soft);margin-top:18px;max-width:46rem}
+
+/* journey overview */
+.journey{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,15rem),1fr));gap:14px;margin-top:24px}
+.stage{background:var(--panel);border:1px solid var(--rule);border-radius:14px;padding:18px;min-width:0}
+.stage .n{font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:var(--accent);text-transform:uppercase}
+.stage h3{font-family:var(--display);font-weight:700;font-size:18px;margin-top:8px}
+.stage p{font-size:14px;line-height:1.55;color:var(--ink-soft);margin-top:6px}
+.stage .who{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;border-radius:99px;padding:4px 9px;border:1px solid transparent;white-space:nowrap}
+.tag.cx{background:var(--gold-soft);color:#8A6412;border-color:#EBD9A8}
+.tag.px{background:var(--accent-soft);color:var(--accent-deep);border-color:#C9D4FA}
+.tag.core{background:#EEF0F4;color:var(--ink-soft);border-color:var(--rule-strong)}
+.paths{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,22rem),1fr));gap:14px;margin-top:14px}
+.path{border-radius:14px;padding:18px;border:1px solid var(--rule);background:var(--panel)}
+.path h3{font-family:var(--display);font-weight:700;font-size:18px}
+.path ol{margin:10px 0 0 18px;font-size:14px;line-height:1.7;color:var(--ink-soft)}
+.path.n{border-top:4px solid var(--accent)} .path.t{border-top:4px solid var(--gold)}
+.tbl{overflow-x:auto;margin-top:18px;border:1px solid var(--rule);border-radius:12px;background:var(--panel)}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:13.5px}
+th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faded);background:#FAFBFD}
+tr:last-child td{border-bottom:0}
+td b{font-weight:700}
+
+/* flow tabs */
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.tab{appearance:none;cursor:pointer;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;background:var(--panel);border:1px solid var(--rule);color:var(--ink-soft);border-radius:99px;padding:10px 15px;display:flex;gap:8px;align-items:center}
+.tab:hover{border-color:var(--accent);color:var(--accent-deep)}
+.tab.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.tab b{font-family:var(--display);font-size:13px;color:var(--accent)}
+.tab.on b{color:#AFC0FF}
+.tab:focus-visible,.nav:focus-visible,.dot:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.intro{font-size:14.5px;line-height:1.55;color:var(--ink-soft);margin-top:16px;max-width:46rem}
+
+.pbar{height:3px;background:var(--rule);border-radius:3px;overflow:hidden;margin-top:18px}
+.pbar i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
+
+/* player */
+.player{display:grid;grid-template-columns:minmax(0,340px) 1fr;gap:clamp(24px,5vw,60px);align-items:center;margin-top:28px}
+@media(max-width:820px){.player{grid-template-columns:1fr;gap:22px}}
+.framecol{display:flex;justify-content:center;min-width:0}
+.phone{width:330px;max-width:86vw;background:var(--panel);border:1px solid var(--rule);border-radius:38px;padding:11px;box-shadow:0 30px 60px -28px rgba(27,57,196,.35),0 2px 8px rgba(0,0,0,.05)}
+.phone .notch{width:40%;height:5px;background:var(--rule);border-radius:99px;margin:2px auto 9px}
+.screen{position:relative;border-radius:27px;overflow:hidden auto;background:var(--page);border:1px solid var(--rule);height:min(660px,calc(100vh - 190px));scrollbar-width:none}
+.screen::-webkit-scrollbar{display:none}
+.screen img{display:block;width:100%;height:auto;cursor:pointer}
+.scrollhint{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;background:rgba(14,18,32,.78);color:#fff;border-radius:99px;padding:6px 11px;pointer-events:none;transition:opacity .3s}
+.flash{position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;background:linear-gradient(160deg,var(--accent),var(--accent-deep));color:#fff;opacity:0;visibility:hidden;transition:opacity .5s,visibility .5s}
+.flash.show{opacity:1;visibility:visible}
+.flash .k{font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:#C9D4FF;margin-bottom:12px}
+.flash h5{font-family:var(--display);font-weight:800;font-size:28px;line-height:1.08}
+.read{min-width:0}
+.fig{display:flex;align-items:flex-end;gap:12px;margin-bottom:12px}
+.fig .num{font-family:var(--display);font-weight:800;font-size:58px;line-height:.8;color:var(--accent)}
+.fig .of{font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--ink-faded);padding-bottom:6px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.chip{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;background:var(--panel);border:1px solid var(--rule);border-radius:99px;padding:5px 11px;color:var(--ink-soft)}
+.read h3{font-family:var(--display);font-weight:700;font-size:clamp(22px,3vw,30px);line-height:1.12;letter-spacing:-.01em;text-wrap:balance}
+.read p{font-size:15.5px;line-height:1.6;color:var(--ink-soft);margin-top:12px;max-width:34rem;min-height:3.2em}
+.controls{display:flex;gap:10px;margin-top:24px;flex-wrap:wrap}
+.nav{appearance:none;cursor:pointer;font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.12em;text-transform:uppercase;background:var(--panel);border:1px solid var(--rule-strong);color:var(--ink);border-radius:10px;padding:13px 20px;min-height:44px}
+.nav:hover{border-color:var(--ink)}
+.nav:disabled{opacity:.4;cursor:default}
+.nav.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.nav.primary:hover{background:var(--accent-deep)}
+.dots{display:flex;flex-wrap:wrap;gap:6px;margin-top:24px;border-top:1px solid var(--rule);padding-top:16px}
+.dot{appearance:none;cursor:pointer;background:var(--panel);border:1px solid var(--rule);color:var(--ink-faded);font-family:var(--mono);font-size:10px;min-width:28px;height:28px;border-radius:7px;padding:0 4px}
+.dot.cx{border-bottom:3px solid #EBC867}
+.dot.px{border-bottom:3px solid #9DB0F5}
+.dot:hover{border-color:var(--accent);color:var(--accent)}
+.dot.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.legend{display:flex;gap:14px;margin-top:10px;font-size:12px;color:var(--ink-faded);flex-wrap:wrap}
+.legend span::before{content:"";display:inline-block;width:14px;height:3px;margin-right:6px;vertical-align:middle;background:#EBC867}
+.legend span.p::before{background:#9DB0F5}
+
+.lb{position:fixed;inset:0;z-index:60;background:rgba(10,14,28,.94);display:none;overflow:auto;padding:40px 16px;cursor:zoom-out}
+.lb.on{display:block}
+.lb img{display:block;max-width:min(560px,96vw);margin:0 auto;border-radius:10px}
+footer{text-align:center;padding:56px 0 72px;color:var(--ink-faded);font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="topbar"><div class="inner">
+  <span class="brand"><i></i>TCPL Release Visit</span>
+  <nav><a href="#overview">Overview</a><a href="#e2e">End to end</a><a href="#cx">Customer app</a><a href="#px">Partner app</a><a href="#status">Status</a></nav>
+</div></div>
+
+<div class="wrap">
+  <header class="mast">
+    <div class="kicker">Tenmark Capital · Gold loan release</div>
+    <h1>Release visit revamp walkthrough</h1>
+    <p>How a closed Tenmark gold loan is released, screen by screen, in the Oromoney customer app and the Tenmark Partner App. It covers both release paths: a <b>normal release</b>, where the customer collects in person, and a <b>third-party release</b>, where someone collects on the customer’s behalf.</p>
+    <div class="facts"><span><b>2</b> release paths</span><span><b>2</b> apps</span><span id="fcount"></span><span>Spec · ENG-5409</span></div>
+  </header>
+
+  <section class="sec" id="overview">
+    <div class="shead"><span class="k">Overview</span><h2>The journey at a glance</h2></div>
+    <p class="lead">The first stages are the same for both paths. The flow forks at release path selection, and both paths rejoin at gold verification and handover.</p>
+    <div class="journey">
+      <div class="stage"><div class="n">Stage 1</div><h3>Close and book</h3><p>The loan moves to Loan closed – release pending. The customer pays the closure amount and books a slot at the fixed Tenmark branch.</p><div class="who"><span class="tag cx">Customer app</span></div></div>
+      <div class="stage"><div class="n">Stage 2</div><h3>Pickup</h3><p>A partner opens the visit from My Visits and self-assigns it. The visit is locked to that partner for its lifetime.</p><div class="who"><span class="tag px">Partner app</span></div></div>
+      <div class="stage"><div class="n">Stage 3</div><h3>Path and verification</h3><p>The partner selects Regular or Third party. Regular uses face match and geolocation; third party uses geolocation only.</p><div class="who"><span class="tag px">Partner app</span></div></div>
+      <div class="stage"><div class="n">Stage 4</div><h3>Gold verification</h3><p>Every item is photographed and marked matched or not matched against the valuation record. Any mismatch blocks the release.</p><div class="who"><span class="tag px">Partner app</span></div></div>
+      <div class="stage"><div class="n">Stage 5</div><h3>eSign</h3><p>Normal release: the customer signs the release document in their app. Third party: the collector signs the declaration before approval.</p><div class="who"><span class="tag cx">Customer app</span><span class="tag px">Partner app</span></div></div>
+      <div class="stage"><div class="n">Stage 6</div><h3>Handover</h3><p>A release proof photo of the person holding the gold is mandatory. It is the proof of receipt and appears in the customer app.</p><div class="who"><span class="tag px">Partner app</span><span class="tag cx">Customer app</span></div></div>
+    </div>
+    <div class="paths">
+      <div class="path n"><h3>Normal release</h3><ol><li>Select Regular release</li><li>Customer live photo: face match and geolocation</li><li>Release type: Full Release</li><li>Gold verification, item by item</li><li>Customer eSigns in the Oromoney app</li><li>Release proof photo and handover</li></ol></div>
+      <div class="path t"><h3>Third-party release</h3><ol><li>Select Third party release</li><li>Third party live photo: geolocation only</li><li>Third party details, email OTP and DigiLocker</li><li>Reason for release and its documents</li><li>Collector eSigns the declaration, then submit</li><li>Tenmark approves in CORE (or rejects with a reason)</li><li>Release type, gold verification, handover</li></ol></div>
+    </div>
+  </section>
+
+  <section class="sec" id="e2e" data-group="e2e">
+    <div class="shead"><span class="k">Chronological</span><h2>End to end</h2><span class="c" data-count></span></div>
+    <p class="lead">Both apps in the order things happen. Each screen is tagged with the app it belongs to.</p>
+  </section>
+
+  <section class="sec" id="cx" data-group="cx">
+    <div class="shead"><span class="k">Oromoney</span><h2>Customer app</h2><span class="c" data-count></span></div>
+    <p class="lead">Every screen the customer sees, from loan closure to gold released, including rejection, blocked and cancelled states.</p>
+  </section>
+
+  <section class="sec" id="px" data-group="px">
+    <div class="shead"><span class="k">Tenmark</span><h2>Partner app</h2><span class="c" data-count></span></div>
+    <p class="lead">Every screen the Tenmark partner uses at the branch, with failure and edge states placed where they occur.</p>
+  </section>
+
+  <section class="sec" id="status">
+    <div class="shead"><span class="k">Reference</span><h2>Status across surfaces</h2></div>
+    <div class="tbl"><table>
+      <thead><tr><th>Stage</th><th>Customer app</th><th>Partner app</th><th>CORE and Oro Admin</th></tr></thead>
+      <tbody>
+        <tr><td>Loan closed</td><td>Loan closed – release pending</td><td>—</td><td>—</td></tr>
+        <tr><td>Visit booked</td><td>Booked</td><td>Confirmed</td><td>Release confirmed</td></tr>
+        <tr><td>Self-assigned</td><td>Partner assigned</td><td>Owned by partner</td><td>Release assigned</td></tr>
+        <tr><td>Verification and eSign</td><td>In progress</td><td>In progress</td><td>Release in progress</td></tr>
+        <tr><td>Third party submitted</td><td>In progress</td><td>Approval pending</td><td>Release approval pending</td></tr>
+        <tr><td>Complete</td><td>Gold released, with handover image</td><td>Visit complete</td><td>Release completed</td></tr>
+        <tr><td>Any item not matched</td><td>Release blocked</td><td>Release blocked</td><td>Release blocked</td></tr>
+        <tr><td>Third party rejected</td><td>Rejected, with Reschedule visit</td><td>Rejected</td><td>Release cancelled</td></tr>
+      </tbody>
+    </table></div>
+    <div class="tbl"><table>
+      <thead><tr><th>How a release ends</th><th>Trigger</th><th>What happens next</th></tr></thead>
+      <tbody>
+        <tr><td><b>Completed</b></td><td>Release proof photo captured</td><td>Loan closed. Customer sees the handover image.</td></tr>
+        <tr><td><b>Blocked</b></td><td>Any item marked not matched</td><td>No partial release and no in-app bypass. Resolved manually, off-app.</td></tr>
+        <tr><td><b>Cancelled</b></td><td>Third party rejected in CORE</td><td>Payment and ledger unchanged. Customer reschedules a new visit from zero.</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+</div>
+<footer>TCPL release visit · Oromoney and Tenmark Partner App · screens from Figma</footer>
+<div class="lb" id="lb"><img id="lbimg" alt=""></div>
+
+<script>
+const DATA={"screens":{"2660-16517":{"a":"cx","l":"Loan closed","t":"Loan closed, release pending","c":"The gold loan shows the new status Loan closed – release pending. Schedule release visit is available directly from the manage loan page."},"2639-68742":{"a":"cx","l":"Loan closed","t":"Foreclosure request accepted","c":"The customer’s foreclosure request is accepted. Make payment now starts the closure and release booking."},"2639-68958":{"a":"cx","l":"Book the visit","t":"Pay closure amount","c":"The full closure amount is shown with its breakup: gold loan, personal loan and charges."},"2639-67605":{"a":"cx","l":"Book the visit","t":"Schedule release","c":"The release address is the Tenmark branch and cannot be changed. The customer picks a date."},"2639-67047":{"a":"cx","l":"Book the visit","t":"Choose a time slot","c":"Slots are grouped into morning, afternoon and evening."},"2639-68052":{"a":"cx","l":"Book the visit","t":"Confirm and pay","c":"Date and time are set. Confirm & make payment moves to checkout."},"2639-68673":{"a":"cx","l":"Book the visit","t":"Choose payment method","c":"UPI, debit card, net banking or NEFT/RTGS/IMPS."},"2639-68519":{"a":"cx","l":"Book the visit","t":"Payment received","c":"The release appointment is booked. The visit shows as Visit confirmed with date, time and branch."},"2639-65884":{"a":"cx","l":"Book the visit","t":"Home: release appointment","c":"On visit day the home screen carries a Start Appointment strip for the release visit."},"2639-66252":{"a":"cx","l":"Book the visit","t":"Home: release appointment","c":"On visit day the home screen carries a Start Appointment strip for the release visit."},"2639-66620":{"a":"cx","l":"At the branch","t":"Release visit: partner not yet assigned","c":"Visit ID, date, time, branch location and loan IDs. The partner card waits for a Tenmark partner to pick up the visit."},"2639-66682":{"a":"cx","l":"At the branch","t":"Release visit: partner not yet assigned","c":"Visit ID, date, time, branch location and loan IDs. The partner card waits for a Tenmark partner to pick up the visit."},"2639-66744":{"a":"cx","l":"At the branch","t":"Partner assigned","c":"Once a partner self-assigns, their name and call button appear on the visit."},"2639-66818":{"a":"cx","l":"At the branch","t":"Partner assigned","c":"Once a partner self-assigns, their name and call button appear on the visit."},"2639-69024":{"a":"cx","l":"At the branch","t":"Your visit is being started","c":"Shown while the partner selects the release path and verifies presence at the branch."},"2639-69046":{"a":"cx","l":"At the branch","t":"Your visit is being started","c":"Shown while the partner selects the release path and verifies the third party at the branch."},"2639-66892":{"a":"cx","l":"Gold verification","t":"Your gold release is in progress","c":"Shown while the partner verifies every gold item against the valuation record."},"2639-66955":{"a":"cx","l":"Gold verification","t":"Your gold release is in progress","c":"Shown while the partner verifies gold items after central approval."},"2639-69130":{"a":"cx","l":"Gold verification","t":"Your gold release is in progress","c":"Status the customer sees between steps of the release."},"2639-66934":{"a":"cx","l":"Third party","t":"Third party release eSign in progress","c":"The customer is told a third party is collecting and signing the declaration at the branch. The customer does not sign on this path."},"2639-69177":{"a":"cx","l":"eSign","t":"Start eSign","c":"Normal release only. The customer signs the release document from their own app using Aadhaar OTP."},"2639-69228":{"a":"cx","l":"eSign","t":"Release document","c":"The release document lists loan details, items released, condition of collateral, discharge and declaration. It can be read before signing."},"2639-66913":{"a":"cx","l":"eSign","t":"eSign in progress","c":"Shown while the Aadhaar OTP signature is processed."},"2639-67031":{"a":"cx","l":"eSign","t":"eSign failed","c":"A failed eSign can be retried. The flow resumes without creating a duplicate document."},"2639-69151":{"a":"cx","l":"eSign","t":"eSign completed","c":"The release document is signed. The customer is asked to collect their gold from the partner."},"2639-69068":{"a":"cx","l":"Gold released","t":"Gold released","c":"Release complete. Visit ID, gold loan ID and personal loan ID are shown with the handover image from the partner app."},"2639-69099":{"a":"cx","l":"Gold released","t":"Gold released","c":"Release complete for the third-party path, with the handover image and loan IDs."},"2639-70675":{"a":"cx","l":"Rejected","t":"Third party release rejected","c":"The approver’s rejection reason is shown. Reschedule visit lets the customer book a fresh visit at no extra charge."},"2639-69787":{"a":"cx","l":"Reschedule","t":"Schedule release","c":"The branch address stays fixed. Payment is not taken again, so the screen only asks for date and time."},"2639-69252":{"a":"cx","l":"Reschedule","t":"Choose a time slot","c":"Same slot picker as the first booking."},"2639-70221":{"a":"cx","l":"Reschedule","t":"Confirm new slot","c":"Date and time are set for the new visit."},"2639-70702":{"a":"cx","l":"Reschedule","t":"Release visit booked","c":"A new visit is created with a new visit ID. It starts from zero: fresh pickup, verification and gold check, on either path."},"2639-66976":{"a":"cx","l":"Blocked","t":"Release blocked","c":"Shown when any gold item is marked not matched. The customer sees a generic technical message; the mismatch reason is not shown."},"2639-66996":{"a":"cx","l":"Cancelled","t":"Release cancelled","c":"Shown when the visit is cancelled. The customer is told the team will get back shortly."},"2639-71180":{"a":"px","l":"Pickup","t":"My Visits","c":"The Tenmark partner sees release visits in My Visits with status chips. Confirmed visits are ready to pick up."},"2639-74397":{"a":"px","l":"Pickup","t":"My Visits","c":"The Tenmark partner sees release visits in My Visits with status chips. Confirmed visits are ready to pick up."},"2639-70727":{"a":"px","l":"Pickup","t":"Release visit detail","c":"Branch, visit time, customer and gold details (5 items, 100 g). The partner drags Start Visit to begin."},"2639-74103":{"a":"px","l":"Pickup","t":"Release visit detail","c":"Branch, visit time, customer and gold details (5 items, 100 g). The partner drags Start Visit to begin."},"2639-70784":{"a":"px","l":"Pickup","t":"Self-assign this visit?","c":"Starting the visit assigns it to this partner for its lifetime. Cancel goes back."},"2639-74160":{"a":"px","l":"Pickup","t":"Self-assign this visit?","c":"Starting the visit assigns it to this partner for its lifetime. Cancel goes back."},"2639-70854":{"a":"px","l":"Pickup","t":"Visit self-assigned","c":"A green toast confirms the assignment."},"2639-74230":{"a":"px","l":"Pickup","t":"Visit self-assigned","c":"A green toast confirms the assignment."},"2639-70910":{"a":"px","l":"Pickup","t":"Start Visit","c":"The visit is now owned by this partner."},"2639-74286":{"a":"px","l":"Pickup","t":"Start Visit","c":"The visit is now owned by this partner."},"2639-70964":{"a":"px","l":"Pickup","t":"Visit already started","c":"Any other partner opening the visit sees who started it. Self-assign is not available to them."},"2639-74340":{"a":"px","l":"Pickup","t":"Visit already started","c":"Any other partner opening the visit sees who started it. Self-assign is not available to them."},"2639-71718":{"a":"px","l":"Pickup","t":"Gold details","c":"Read-only record of the latest valuation: item count, weights, 22C net weight and locker number."},"2639-74681":{"a":"px","l":"Pickup","t":"Gold details","c":"Read-only record of the latest valuation: item count, weights, 22C net weight and locker number."},"2639-71661":{"a":"px","l":"Pickup","t":"Item details","c":"Per item: weights, gold markings, valuation remarks and the valuation photo set."},"2639-74624":{"a":"px","l":"Pickup","t":"Item details","c":"Per item: weights, gold markings, valuation remarks and the valuation photo set."},"2639-71444":{"a":"px","l":"Release path","t":"Select release path: Regular","c":"The path is chosen before verification, because the two paths verify differently."},"2639-71021":{"a":"px","l":"Customer verification","t":"Visit stepper","c":"Three steps: Customer Verification, Gold Verification, Gold Handover."},"2773-27953":{"a":"px","l":"Customer verification","t":"Customer live photo","c":"The customer must be inside the visit location. The photo is used for face match and geolocation."},"2773-27933":{"a":"px","l":"Customer verification","t":"Photo captured","c":"The partner confirms the captured photo."},"2773-27925":{"a":"px","l":"Customer verification","t":"Verifying customer presence","c":"Face match against the onboarding photo and a geolocation check run together."},"2639-71867":{"a":"px","l":"Customer verification","t":"Verification failed: far from branch","c":"If the location check fails the partner must be inside the branch and try again."},"2639-71849":{"a":"px","l":"Customer verification","t":"Verification failed: face mismatch","c":"If the face does not match the record, the partner recaptures the photo."},"2773-27973":{"a":"px","l":"Customer verification","t":"Customer presence verified","c":"Both checks passed."},"2639-71074":{"a":"px","l":"Customer verification","t":"Step 1 completed","c":"Customer Verification is marked completed on the stepper."},"2639-71431":{"a":"px","l":"Release type","t":"Release type: Full Release","c":"Full Release is the only option and is preselected. It is recorded against the visit."},"2639-71461":{"a":"px","l":"Gold verification","t":"Gold verification listing","c":"Every item is pending. Progress reads 0 of 5 items verified."},"2639-71534":{"a":"px","l":"Gold verification","t":"Gold items summary","c":"Expanded summary: item count, gross weight, deduction, net weight and 22C net weight."},"2639-71878":{"a":"px","l":"Gold verification","t":"Verify gold item","c":"The partner compares the item with its valuation photos, weights, markings and remarks. Matched or Not matched."},"2639-72096":{"a":"px","l":"Gold verification","t":"Capture gold item","c":"A photo is mandatory before the item can be marked either way."},"2639-72111":{"a":"px","l":"Gold verification","t":"Item captured","c":"The item must sit fully inside the frame."},"2639-72126":{"a":"px","l":"Gold verification","t":"Mark as matched","c":"Add more photos and item remarks, then confirm."},"2639-72383":{"a":"px","l":"Gold verification","t":"Item marked matched","c":"The outcome can still be changed before submission."},"3036-63625":{"a":"px","l":"Gold verification","t":"Item marked as matched","c":"A toast confirms and the app returns to the listing. The partner picks the next item."},"2639-72146":{"a":"px","l":"Gold verification","t":"5 of 5 items verified","c":"Complete Verification enables only when every item has an outcome."},"2639-72220":{"a":"px","l":"Gold verification","t":"Complete verification?","c":"After submission the outcome cannot be edited in the app."},"2639-72303":{"a":"px","l":"Gold verification","t":"Verification completed","c":"All items matched."},"2639-71127":{"a":"px","l":"Gold verification","t":"Step 2 completed","c":"Customer and gold verification are complete; handover is next."},"2639-71407":{"a":"px","l":"eSign","t":"Customer eSign in progress","c":"The customer signs the release document in their own app. Check status refreshes."},"2639-71419":{"a":"px","l":"eSign","t":"Customer eSign completed","c":"The partner can now hand over the gold."},"2639-71609":{"a":"px","l":"Handover","t":"Release proof","c":"Photo of the customer holding the gold items. Mandatory: this is the proof of receipt."},"2639-71622":{"a":"px","l":"Handover","t":"Release proof captured","c":"Face and items must both be clearly visible."},"2639-71635":{"a":"px","l":"Handover","t":"Release visit complete","c":"Visit ID and loan ID are shown. CORE and Oro Admin show Release completed."},"2639-74067":{"a":"px","l":"Release path","t":"Select release path: Third party","c":"Used when the customer cannot collect in person: deceased, missing, abroad or unwell."},"3716-83576":{"a":"px","l":"Third party verification","t":"Visit stepper","c":"Step 1 becomes Third Party Verification."},"2773-28144":{"a":"px","l":"Third party verification","t":"Third party live photo","c":"Geolocation only. There is no face match, since the customer is not present."},"2773-28124":{"a":"px","l":"Third party verification","t":"Photo captured","c":"The partner confirms the captured photo."},"2773-28164":{"a":"px","l":"Third party verification","t":"Verifying third party presence","c":"Geolocation check against the branch."},"2639-74092":{"a":"px","l":"Third party verification","t":"Verification failed: far from branch","c":"The partner must be inside the branch and try again."},"2773-28274":{"a":"px","l":"Third party verification","t":"Third party presence verified","c":"Location confirmed."},"2639-74882":{"a":"px","l":"Third party details","t":"Third party details","c":"Relationship to the customer, mobile number and email. All fields are mandatory."},"2639-74894":{"a":"px","l":"Third party details","t":"Details filled","c":"Relationship is picked from a fixed list (25 values, with Other as free text)."},"3732-13892":{"a":"px","l":"Third party details","t":"Verify email OTP","c":"A 4-digit OTP is sent to the third party’s email."},"3732-13919":{"a":"px","l":"Third party details","t":"OTP entered","c":"Resend becomes available after 30 seconds."},"3732-13952":{"a":"px","l":"Third party details","t":"Verifying OTP","c":""},"3732-13988":{"a":"px","l":"Third party details","t":"OTP verified","c":"The email is confirmed."},"3732-14183":{"a":"px","l":"Third party details","t":"Invalid OTP","c":"A wrong code can be retried."},"2639-74906":{"a":"px","l":"DigiLocker","t":"DigiLocker verification","c":"The third party signs in to their own DigiLocker with their Aadhaar-linked mobile. Name, age, address, PAN and Aadhaar are fetched."},"3732-13836":{"a":"px","l":"DigiLocker","t":"Unable to verify","c":"Shown if DigiLocker verification cannot be completed. The partner can try again."},"2639-74926":{"a":"px","l":"DigiLocker","t":"Third party identity verified","c":"The third party’s identity is confirmed."},"2639-75047":{"a":"px","l":"Documents","t":"Reason for release","c":"Four reasons: death of customer, customer missing, customer abroad or out of city, customer sick or hospitalised."},"2639-75108":{"a":"px","l":"Documents","t":"Death case: details","c":"Customer death date, death certificate and legal heir certificate or family tree."},"2639-75066":{"a":"px","l":"Documents","t":"Upload option","c":"Capture with camera, upload from gallery or add a file."},"2639-75211":{"a":"px","l":"Documents","t":"Document upload","c":"Several pages can be added per document and removed before upload."},"2639-75124":{"a":"px","l":"Documents","t":"Documents uploaded","c":"Each document shows the number of files uploaded."},"2639-75139":{"a":"px","l":"Documents","t":"Death case: complete","c":"Every document for the reason is uploaded. All are mandatory."},"2639-75155":{"a":"px","l":"Documents","t":"Customer missing","c":"Missing-since date, FIR number, FIR date, police station, FIR copy, non-traceable report and legal heir certificate."},"2639-75175":{"a":"px","l":"Documents","t":"Customer abroad or out of city","c":"Request letter date, emailed request, signed letter, video call confirmation and travel ticket or visa."},"2639-75193":{"a":"px","l":"Documents","t":"Customer sick or hospitalised","c":"Request letter date, emailed request, signed letter, video call confirmation and medical certificate."},"2639-74940":{"a":"px","l":"Declaration eSign","t":"Third party release eSign","c":"The collector signs the declaration-cum-indemnity on the partner’s device using Aadhaar OTP."},"2639-74980":{"a":"px","l":"Declaration eSign","t":"Declaration view","c":"The declaration covers the release reason, collector details and items released."},"3349-83094":{"a":"px","l":"Declaration eSign","t":"Release eSign in progress","c":"A timer shows while the signature is processed."},"3349-83141":{"a":"px","l":"Declaration eSign","t":"Release eSign failed","c":"A failed signature can be retried."},"2639-74991":{"a":"px","l":"Declaration eSign","t":"Release eSign completed","c":"The declaration is signed and ready for approval."},"2639-75004":{"a":"px","l":"Approval","t":"Submit for approval?","c":"The approver reviews the documents and the signed declaration. Nothing can be changed after sending."},"2639-74870":{"a":"px","l":"Approval","t":"Approval in progress","c":"The gold cannot be handed over until a Tenmark approver acts in CORE."},"2639-74794":{"a":"px","l":"Approval","t":"Approval in progress","c":"The pending state survives a session gap; Check status refreshes it."},"2639-76076":{"a":"px","l":"Approval","t":"Third party release rejected","c":"The approver’s reason is shown. The visit closes and the customer can reschedule."},"2639-74806":{"a":"px","l":"Approval","t":"Third party release approved","c":"The visit continues to release type and gold verification."},"2639-74817":{"a":"px","l":"Approval","t":"Step 1 completed","c":"Third Party Verification is completed."},"2639-75287":{"a":"px","l":"Release type","t":"Release type: Full Release","c":"Selected after approval on this path."},"2639-75300":{"a":"px","l":"Gold verification","t":"Gold verification listing","c":"Runs after approval, identical to the normal path."},"2639-75373":{"a":"px","l":"Gold verification","t":"Gold items summary","c":"Item count and weights against the latest valuation."},"2639-75500":{"a":"px","l":"Gold verification","t":"Verify gold item","c":"Compare with the valuation photo set, then mark matched or not matched."},"2639-76005":{"a":"px","l":"Gold verification","t":"Item marked matched","c":"The outcome can still be changed before submission."},"2639-75718":{"a":"px","l":"Gold verification","t":"Capture gold item","c":"A photo is mandatory for both outcomes."},"2639-75733":{"a":"px","l":"Gold verification","t":"Item captured","c":""},"2639-75748":{"a":"px","l":"Gold verification","t":"Mark as matched","c":"Photos and remarks are saved with the item."},"3036-63744":{"a":"px","l":"Gold verification","t":"Item marked as matched","c":"The app returns to the listing."},"2639-75768":{"a":"px","l":"Gold verification","t":"5 of 5 items verified","c":"Complete Verification is now enabled."},"2639-75842":{"a":"px","l":"Gold verification","t":"Complete verification?","c":""},"2639-75925":{"a":"px","l":"Gold verification","t":"Verification completed","c":"All items matched."},"2639-75234":{"a":"px","l":"Gold verification","t":"Step 2 completed","c":"Handover is next. The declaration is already signed, so no customer eSign is needed."},"2639-75448":{"a":"px","l":"Handover","t":"Release proof","c":"Photo of the person collecting, holding the gold items. Tagged with their role."},"2639-75461":{"a":"px","l":"Handover","t":"Release proof captured","c":""},"2639-75474":{"a":"px","l":"Handover","t":"Release visit complete","c":"CORE and Oro Admin show Release completed."}},"flows":[{"g":"e2e","k":"e2e-normal","n":"Normal release","d":"The customer closes the loan and books a visit, the partner verifies the customer and every gold item, the customer eSigns in their app, and the partner hands over the gold.","ids":["2660-16517","2639-68742","2639-68958","2639-67605","2639-67047","2639-68052","2639-68673","2639-68519","2639-65884","2639-66620","2639-71180","2639-70727","2639-70784","2639-70854","2639-70910","2639-66744","2639-69024","2639-71444","2639-71021","2773-27953","2773-27933","2773-27925","2773-27973","2639-71074","2639-71431","2639-66892","2639-71461","2639-71878","2639-72096","2639-72111","2639-72126","3036-63625","2639-72146","2639-72220","2639-72303","2639-71127","2639-71407","2639-69177","2639-69228","2639-66913","2639-69151","2639-71419","2639-71609","2639-71622","2639-71635","2639-69068"]},{"g":"e2e","k":"e2e-tp","n":"Third-party release","d":"The customer cannot attend. A third party verifies at the branch, uploads the reason documents and signs the declaration. Tenmark approves in CORE, then gold verification and handover follow.","ids":["2660-16517","2639-68742","2639-68958","2639-67605","2639-67047","2639-68052","2639-68673","2639-68519","2639-66252","2639-66682","2639-74397","2639-74103","2639-74160","2639-74230","2639-74286","2639-66818","2639-69046","2639-74067","3716-83576","2773-28144","2773-28124","2773-28164","2773-28274","2639-74882","2639-74894","3732-13892","3732-13919","3732-13952","3732-13988","2639-74906","2639-74926","2639-75047","2639-75108","2639-75066","2639-75211","2639-75124","2639-75139","2639-74940","2639-66934","2639-74980","2639-74991","2639-75004","2639-74870","2639-74806","2639-74817","2639-75287","2639-66955","2639-75300","2639-75500","2639-75718","2639-75733","2639-75748","3036-63744","2639-75768","2639-75842","2639-75925","2639-75234","2639-75448","2639-75461","2639-75474","2639-69099"]},{"g":"e2e","k":"e2e-reject","n":"Third party rejected","d":"If the approver rejects the third party release, the visit closes. The payment and the closed ledger stay as they are, and the customer books a new visit from zero.","ids":["2639-75004","2639-74870","2639-76076","2639-70675","2639-69787","2639-69252","2639-70221","2639-70702"]},{"g":"cx","k":"cx-book","n":"Booking","d":"From loan closure to a confirmed release visit.","ids":["2660-16517","2639-68742","2639-68958","2639-67605","2639-67047","2639-68052","2639-68673","2639-68519","2639-65884"]},{"g":"cx","k":"cx-normal","n":"Normal release","d":"What the customer sees during a normal release, including their own eSign.","ids":["2639-66620","2639-66744","2639-69024","2639-66892","2639-69177","2639-69228","2639-66913","2639-67031","2639-69151","2639-69130","2639-69068"]},{"g":"cx","k":"cx-tp","n":"Third-party release","d":"What the customer sees while a third party collects on their behalf. The customer does not sign.","ids":["2639-66252","2639-66682","2639-66818","2639-69046","2639-66934","2639-66955","2639-69099"]},{"g":"cx","k":"cx-end","n":"Rejected, blocked, cancelled","d":"The three ways a release can stop, and how the customer reschedules after a rejection.","ids":["2639-70675","2639-69787","2639-69252","2639-70221","2639-70702","2639-66976","2639-66996"]},{"g":"px","k":"px-normal","n":"Normal release","d":"Tenmark Partner App, regular path with all items matched. Edge screens are included where they occur.","ids":["2639-71180","2639-70727","2639-70784","2639-70854","2639-70910","2639-70964","2639-71718","2639-71661","2639-71444","2639-71021","2773-27953","2773-27933","2773-27925","2639-71867","2639-71849","2773-27973","2639-71074","2639-71431","2639-71461","2639-71534","2639-71878","2639-72096","2639-72111","2639-72126","2639-72383","3036-63625","2639-72146","2639-72220","2639-72303","2639-71127","2639-71407","2639-71419","2639-71609","2639-71622","2639-71635"]},{"g":"px","k":"px-tp","n":"Third-party release","d":"Tenmark Partner App, third-party path: details, DigiLocker, reason documents for all four reasons, declaration eSign, approval, gold verification and handover.","ids":["2639-74397","2639-74103","2639-74160","2639-74230","2639-74286","2639-74340","2639-74681","2639-74624","2639-74067","3716-83576","2773-28144","2773-28124","2773-28164","2639-74092","2773-28274","2639-74882","2639-74894","3732-13892","3732-13919","3732-13952","3732-13988","3732-14183","2639-74906","3732-13836","2639-74926","2639-75047","2639-75108","2639-75066","2639-75211","2639-75124","2639-75139","2639-75155","2639-75175","2639-75193","2639-74940","2639-74980","3349-83094","3349-83141","2639-74991","2639-75004","2639-74870","2639-74794","2639-76076","2639-74806","2639-74817","2639-75287","2639-75300","2639-75373","2639-75500","2639-76005","2639-75718","2639-75733","2639-75748","3036-63744","2639-75768","2639-75842","2639-75925","2639-75234","2639-75448","2639-75461","2639-75474"]}]};
+const APP={cx:'Customer app',px:'Partner app'};
+let total=0;
+const players=[];
+document.querySelectorAll('[data-group]').forEach(sec=>{
+  const g=sec.dataset.group, flows=DATA.flows.filter(f=>f.g===g);
+  sec.querySelector('[data-count]').textContent=flows.reduce((a,f)=>a+f.ids.length,0)+' screens · '+flows.length+' flows';
+  const tabs=document.createElement('div');tabs.className='tabs';tabs.setAttribute('role','tablist');
+  tabs.innerHTML=flows.map((f,i)=>`<button class="tab${i?'':' on'}" role="tab" data-i="${i}"><b>${f.ids.length}</b>${f.n}</button>`).join('');
+  sec.append(tabs);
+  const intro=document.createElement('p');intro.className='intro';sec.append(intro);
+  const bar=document.createElement('div');bar.className='pbar';bar.innerHTML='<i></i>';sec.append(bar);
+  const pl=document.createElement('div');pl.className='player';
+  pl.innerHTML=`<div class="framecol"><div class="phone"><div class="notch"></div><div class="screen"><img alt=""><span class="scrollhint">Scroll for more ↓</span><div class="flash"><span class="k">Next</span><h5></h5></div></div></div></div>
+  <div class="read"><div class="fig"><span class="num"></span><span class="of"></span></div><div class="chips"><span class="chip app"></span><span class="chip lab"></span></div><h3></h3><p></p>
+  <div class="controls"><button class="nav prev">← Prev</button><button class="nav primary next">Next →</button></div></div>`;
+  sec.append(pl);
+  const dots=document.createElement('div');dots.className='dots';sec.append(dots);
+  if(g==='e2e'){const lg=document.createElement('div');lg.className='legend';lg.innerHTML='<span>Customer app</span><span class="p">Partner app</span>';sec.append(lg);}
+  const q=s=>pl.querySelector(s), img=q('img'), scr=q('.screen'), hint=q('.scrollhint'), flash=q('.flash');
+  let f=flows[0], idx=0, prev=-1;
+  function hintCheck(){hint.style.opacity=(scr.scrollHeight-scr.clientHeight>24&&scr.scrollTop<12)?1:0;}
+  scr.addEventListener('scroll',hintCheck);
+  img.addEventListener('load',()=>{scr.scrollTop=0;hintCheck();});
+  function render(){
+    const id=f.ids[idx], s=DATA.screens[id];
+    img.src='assets/'+s.a+'/'+id+'.jpg'; img.alt=s.t;
+    q('.num').textContent=idx+1; q('.of').textContent='/ '+f.ids.length;
+    q('.app').textContent=APP[s.a]; q('.lab').textContent=s.l; q('h3').textContent=s.t; q('.read p').textContent=s.c;
+    q('.prev').disabled=idx===0; q('.next').disabled=idx===f.ids.length-1;
+    [...dots.children].forEach((d,i)=>d.classList.toggle('on',i===idx));
+    bar.firstChild.style.width=((idx+1)/f.ids.length*100)+'%';
+    const start=idx===0||DATA.screens[f.ids[idx-1]].l!==s.l||DATA.screens[f.ids[idx-1]].a!==s.a;
+    if(idx>prev&&start&&g==='e2e'){flash.querySelector('.k').textContent=APP[s.a];flash.querySelector('h5').textContent=s.l;flash.classList.add('show');clearTimeout(flash._t);flash._t=setTimeout(()=>flash.classList.remove('show'),900);}
+    else flash.classList.remove('show');
+    prev=idx;
+  }
+  function load(i){
+    f=flows[i]; idx=0; prev=-1; intro.textContent=f.d;
+    [...tabs.children].forEach((t,j)=>{t.classList.toggle('on',j===i);t.setAttribute('aria-selected',j===i);});
+    dots.innerHTML=f.ids.map((id,k)=>`<button class="dot ${DATA.screens[id].a}" data-k="${k}" title="${DATA.screens[id].t}">${k+1}</button>`).join('');
+    render();
+  }
+  tabs.onclick=e=>{const t=e.target.closest('.tab');if(t)load(+t.dataset.i);};
+  dots.onclick=e=>{const d=e.target.closest('.dot');if(d){idx=+d.dataset.k;render();}};
+  q('.prev').onclick=()=>{if(idx>0){idx--;render();}};
+  q('.next').onclick=()=>{if(idx<f.ids.length-1){idx++;render();}};
+  img.onclick=()=>{document.getElementById('lbimg').src=img.src;document.getElementById('lb').classList.add('on');};
+  players.push({sec,next:()=>q('.next').click(),prev:()=>q('.prev').click()});
+  load(0);
+});
+document.getElementById('fcount').innerHTML='<b>'+Object.keys(DATA.screens).length+'</b> screens';
+const lb=document.getElementById('lb');lb.onclick=()=>lb.classList.remove('on');
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){lb.classList.remove('on');return;}
+  if(lb.classList.contains('on'))return;
+  const mid=innerHeight/2;let best=null,bd=1e9;
+  players.forEach(p=>{const r=p.sec.getBoundingClientRect();const d=Math.abs((r.top+r.bottom)/2-mid);if(d<bd){bd=d;best=p;}});
+  if(!best)return;
+  if(e.key==='ArrowRight')best.next();
+  if(e.key==='ArrowLeft')best.prev();
+});
+</script>
+</body>
+</html>
