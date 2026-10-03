@@ -161,10 +161,10 @@ FLOWS = [
  # group, key, tab label, intro, ids
  ('e2e','e2e-normal','Normal release','The customer closes the loan and books a visit, the partner verifies the customer and every gold item, the customer eSigns in their app, and the partner hands over the gold.',
   BOOK + L('2639-65884 2639-66620') + PX_PICK + L('2639-66744 2639-69024 2639-71444 2639-71021 2773-27953 2773-27933 2773-27925 2773-27973 2639-71074 2639-71431 2639-66892 2639-71461 2639-71878 2639-72096 2639-72111 2639-72126 3036-63625 2639-72146 2639-72220 2639-72303 2639-71127 2639-71407 2639-69177 2639-69228 2639-66913 2639-69151 2639-71419 2639-71609 2639-71622 2639-71635 2639-69068')),
- ('e2e','e2e-tp','Third-party release','The customer cannot attend. A third party verifies at the branch, uploads the reason documents and signs the declaration. Tenmark approves in CORE, then gold verification and handover follow.',
-  BOOK + L('2639-66252 2639-66682') + PX_PICK_T + L('2639-66818 2639-69046 2639-74067 3716-83576 2773-28144 2773-28124 2773-28164 2773-28274 2639-74882 2639-74894 3732-13892 3732-13919 3732-13952 3732-13988 2639-74906 2639-74926 2639-75047 2639-75108 2639-75066 2639-75211 2639-75124 2639-75139 2639-74940 2639-66934 2639-74980 2639-74991 2639-75004 2639-74870 2639-74806 2639-74817 2639-75287 2639-66955 2639-75300 2639-75500 2639-75718 2639-75733 2639-75748 3036-63744 2639-75768 2639-75842 2639-75925 2639-75234 2639-75448 2639-75461 2639-75474 2639-69099')),
- ('e2e','e2e-reject','Third party rejected','If the approver rejects the third party release, the visit closes. The payment and the closed ledger stay as they are, and the customer books a new visit from zero.',
-  L('2639-75004 2639-74870 2639-76076 2639-70675 2639-69787 2639-69252 2639-70221 2639-70702')),
+ ('e2e','e2e-tp','Third-party release','The customer cannot attend. A third party verifies at the branch, uploads the reason documents and signs the declaration. A Tenmark approver reviews and approves in CORE, then gold verification and handover follow.',
+  BOOK + L('2639-66252 2639-66682') + PX_PICK_T + L('2639-66818 2639-69046 2639-74067 3716-83576 2773-28144 2773-28124 2773-28164 2773-28274 2639-74882 2639-74894 3732-13892 3732-13919 3732-13952 3732-13988 2639-74906 2639-74926 2639-75047 2639-75108 2639-75066 2639-75211 2639-75124 2639-75139 2639-74940 2639-66934 2639-74980 2639-74991 2639-75004 2639-74870 2639-76439 2639-76669 2639-77648 2639-78443 2639-74806 2639-74817 2639-75287 2639-66955 2639-75300 2639-75500 2639-75718 2639-75733 2639-75748 3036-63744 2639-75768 2639-75842 2639-75925 2639-75234 2639-75448 2639-75461 2639-75474 2639-69099')),
+ ('e2e','e2e-reject','Third party rejected','The approver rejects in CORE with a reason and the visit closes. The payment and the closed ledger stay as they are, and the customer books a new visit from zero.',
+  L('2639-75004 2639-74870 2639-77417 2639-77881 2639-78156 2639-78676 2639-80702 2639-76076 2639-70675 2639-69787 2639-69252 2639-70221 2639-70702')),
  ('cx','cx-book','Booking','From loan closure to a confirmed release visit.', BOOK + L('2639-65884')),
  ('cx','cx-normal','Normal release','What the customer sees during a normal release, including their own eSign.',
   L('2639-66620 2639-66744 2639-69024 2639-66892 2639-69177 2639-69228 2639-66913 2639-67031 2639-69151 2639-69130 2639-69068')),
@@ -176,6 +176,48 @@ FLOWS = [
   PX_PICK + L('2639-70964 2639-71718 2639-71661 2639-71444 2639-71021 2773-27953 2773-27933 2773-27925 2639-71867 2639-71849 2773-27973 2639-71074 2639-71431 2639-71461 2639-71534 2639-71878 2639-72096 2639-72111 2639-72126 2639-72383 3036-63625 2639-72146 2639-72220 2639-72303 2639-71127 2639-71407 2639-71419 2639-71609 2639-71622 2639-71635')),
  ('px','px-tp','Third-party release','Tenmark Partner App, third-party path: details, DigiLocker, reason documents for all four reasons, declaration eSign, approval, gold verification and handover.',
   PX_PICK_T + L('2639-74340 2639-74681 2639-74624 2639-74067 3716-83576 2773-28144 2773-28124 2773-28164 2639-74092 2773-28274 2639-74882 2639-74894 3732-13892 3732-13919 3732-13952 3732-13988 3732-14183 2639-74906 3732-13836 2639-74926 2639-75047 2639-75108 2639-75066 2639-75211 2639-75124 2639-75139 2639-75155 2639-75175 2639-75193 2639-74940 2639-74980 3349-83094 3349-83141 2639-74991 2639-75004 2639-74870 2639-74794 2639-76076 2639-74806 2639-74817 2639-75287 2639-75300 2639-75373 2639-75500 2639-76005 2639-75718 2639-75733 2639-75748 3036-63744 2639-75768 2639-75842 2639-75925 2639-75234 2639-75448 2639-75461 2639-75474')),
+]
+
+# ---------------- Tenmark CORE (admin) ----------------
+S.update({
+'2639-81789': ('core','Visits','All Visits','Every release visit with a status filter bar: Release confirmed, Release assigned, Release in progress, Release completed, Release cancelled. Columns: visit ID and date, customer and mobile, assigned agent, loan amount and ID, visit status.'),
+'2639-78951': ('core','Visit detail','Visit details: release in progress','Release details, customer, assigned agent and the Gold Verification Details list with each item’s Matched status. Normal releases are view-only in CORE.'),
+'2639-79720': ('core','Visit detail','Item detail: matched','Gold verification status, remarks, weights and the valuation photo set. View images opens the full-height viewer.'),
+'2639-80033': ('core','Visit detail','Release completed','The visit status changes to Release completed once the partner captures the release proof.'),
+'2639-82913': ('core','Activity log','Activity log: normal release','Every event with actor and timestamp, earliest first, with Export. One line per item verified.'),
+'2639-79173': ('core','Item mismatch','Release blocked','“Release blocked due to a gold item mismatch. 2 items were marked as not matched.” The not-matched item is flagged in red in the list.'),
+'2639-79400': ('core','Item mismatch','Item detail: not matched','Not matched reasons, remarks and the captured images. There is no action to unblock in CORE; resolution is manual.'),
+'2639-82651': ('core','Approval','All Loans: Release approval pending','The Release approval pending tab lists loans waiting for a third-party decision. The approver opens one from here.'),
+'2639-81157': ('core','Approval','All Visits','The same visit sits in the Gold Release Visits list.'),
+'2639-76095': ('core','Approval','Visit details: release assigned','Before submission the visit shows Release assigned, with release details, customer and assigned agent.'),
+'2639-76439': ('core','Approval','Third party release requires approval','A blue banner appears once the partner submits. Review Documents opens the Release Documents tab.'),
+'2639-76669': ('core','Approval','Release Documents: death case','Release details, third party details, customer live photo, release proof and every uploaded document. Reject and Approve sit in the banner.'),
+'2639-77281': ('core','Approval','Document viewer','Any image opens at full height with zoom, rotate and next/previous.'),
+'2639-77648': ('core','Approval','Approve the release?','No reason is needed to approve. Cancel or Approve.'),
+'2639-78443': ('core','Approval','Release approved','The visit moves to Release in progress and the partner continues to gold verification. Done closes the dialog.'),
+'2639-83085': ('core','Activity log','Activity log: third-party release','Third party category, details, each document upload and the approval submission are logged with actor and time.'),
+'2639-76797': ('core','Reason documents','Customer passed away','Release reason Death Case, customer deceased, with the customer passed away date and the death certificate set.'),
+'2639-76925': ('core','Reason documents','Customer is missing','Missing-since date, FIR number, FIR date and police station, with the FIR and supporting documents.'),
+'2639-77062': ('core','Reason documents','Customer is out of station or sick','Customer’s request letter date with the request letter, video call confirmation and travel or medical proof.'),
+'2639-77190': ('core','Reason documents','Release Documents after a decision','Once decided, the tab shows the same documents without the approval banner.'),
+'2639-81473': ('core','Rejection','All Visits','The approver opens a visit waiting for approval.'),
+'2639-76267': ('core','Rejection','Visit details','Release details and the assigned agent.'),
+'2639-77417': ('core','Rejection','Third party release requires approval','Approve and Reject are available to users with the Approve Third Party Release permission.'),
+'2639-77881': ('core','Rejection','Reject the release?','Cancel or Reject.'),
+'2639-78156': ('core','Rejection','Reject Third Party Release','A reason is mandatory. Confirm records it with the approver and time.'),
+'2639-78676': ('core','Rejection','Release rejected','Done closes the dialog. The visit becomes Release cancelled; payment and ledger are unchanged.'),
+'2639-80474': ('core','Rejection','Rejected banner','“Third party release rejected by <approver> on <date, time>.” View Reason shows why.'),
+'2639-80702': ('core','Rejection','Rejected Reason','The reason entered by the approver. The customer sees the same reason with Reschedule visit.'),
+'2639-82197': ('core','Loan status','Loan closed release pending','From closure payment until the release completes, the gold loan shows Loan closed release pending.'),
+'2639-82424': ('core','Loan status','Loan closed','After the release visit completes, the loan moves to Loan closed.'),
+})
+FLOWS += [
+ ('core','core-normal','Normal release','View-only tracking of a normal release, from the visit list to completion and the activity log.', L('2639-81789 2639-78951 2639-79720 2639-80033 2639-82913')),
+ ('core','core-tp','Third-party approval','The approver reviews the third party’s documents and approves. Gold verification then continues in the partner app.', L('2639-82651 2639-81157 2639-76095 2639-76439 2639-76669 2639-77281 2639-77648 2639-78443 2639-83085')),
+ ('core','core-docs','Reason documents','What the approver sees for each of the four release reasons.', L('2639-76797 2639-76925 2639-77062 2639-77190')),
+ ('core','core-reject','Third-party rejection','Rejecting requires a reason. The visit is cancelled and the customer is offered Reschedule visit.', L('2639-81473 2639-76267 2639-77417 2639-77881 2639-78156 2639-78676 2639-80474 2639-80702')),
+ ('core','core-blocked','Item mismatch','Any item marked not matched blocks the release. CORE shows the flagged item with reasons and images.', L('2639-79173 2639-79400')),
+ ('core','core-loan','Loan status','The two loan statuses around a release.', L('2639-82197 2639-82424')),
 ]
 
 for _,_,_,_,ids in FLOWS:

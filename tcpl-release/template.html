@@ -17,6 +17,7 @@
   --display:"Bricolage Grotesque",system-ui,sans-serif; --body:"Manrope",-apple-system,sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
 html{-webkit-text-size-adjust:100%}
 body{background:var(--page);color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased}
 .wrap{max-width:72rem;margin:0 auto;padding:0 20px}
@@ -132,7 +133,7 @@ td b{font-weight:700}
 
 .lb{position:fixed;inset:0;z-index:60;background:rgba(10,14,28,.94);display:none;overflow:auto;padding:40px 16px;cursor:zoom-out}
 .lb.on{display:block}
-.lb img{display:block;max-width:min(560px,96vw);margin:0 auto;border-radius:10px}
+.lb img{display:block;max-width:min(1400px,96vw);margin:0 auto;border-radius:10px}
 footer{text-align:center;padding:56px 0 72px;color:var(--ink-faded);font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -147,7 +148,7 @@ footer{text-align:center;padding:56px 0 72px;color:var(--ink-faded);font-family:
   <header class="mast">
     <div class="kicker">Tenmark Capital · Gold loan release</div>
     <h1>Release visit revamp walkthrough</h1>
-    <p>How a closed Tenmark gold loan is released, screen by screen, in the Oromoney customer app and the Tenmark Partner App. It covers both release paths: a <b>normal release</b>, where the customer collects in person, and a <b>third-party release</b>, where someone collects on the customer’s behalf.</p>
+    <p>How a closed Tenmark gold loan is released, screen by screen, in the Oromoney customer app and the Tenmark Partner App. It covers both release paths, plus the Tenmark CORE admin console: a <b>normal release</b>, where the customer collects in person, and a <b>third-party release</b>, where someone collects on the customer’s behalf.</p>
     <div class="facts"><span><b>2</b> release paths</span><span><b>2</b> apps + admin</span><span id="fcount"></span><span>Spec · ENG-5409</span></div>
   </header>
 
@@ -170,7 +171,7 @@ footer{text-align:center;padding:56px 0 72px;color:var(--ink-faded);font-family:
 
   <section class="sec" id="e2e" data-group="e2e">
     <div class="shead"><span class="k">Chronological</span><h2>End to end</h2><span class="c" data-count></span></div>
-    <p class="lead">Both apps in the order things happen. Each screen is tagged with the app it belongs to.</p>
+    <p class="lead">The customer app, partner app and Tenmark CORE in the order things happen. Each screen is tagged with where it belongs.</p>
   </section>
 
   <section class="sec" id="cx" data-group="cx">
@@ -233,21 +234,24 @@ document.querySelectorAll('[data-group]').forEach(sec=>{
   const pl=document.createElement('div');pl.className='player';
   const desk=flows.every(f=>f.ids.every(id=>DATA.screens[id].a==='core'));
   if(desk) pl.classList.add('wide');
-  pl.innerHTML=desk?`<div class="framecol"><div class="browser"><div class="chrome"><i></i><i></i><i></i><span class="addr">core.tenmarkcapital.com/visits</span></div><div class="bscreen screen-d"><img alt=""><span class="scrollhint">Scroll for more ↓</span><div class="flash"><span class="k">Next</span><h5></h5></div></div></div></div>
-  <div class="read"><div class="fig"><span class="num"></span><span class="of"></span></div><div class="chips"><span class="chip app"></span><span class="chip lab"></span></div><h3></h3><p></p>
-  <div class="controls"><button class="nav prev">← Prev</button><button class="nav primary next">Next →</button></div></div>`:`<div class="framecol"><div class="phone"><div class="notch"></div><div class="screen"><img alt=""><span class="scrollhint">Scroll for more ↓</span><div class="flash"><span class="k">Next</span><h5></h5></div></div></div></div>
+  pl.innerHTML=`<div class="framecol"><div class="phone"><div class="notch"></div><div class="screen"><img alt=""><span class="scrollhint">Scroll for more ↓</span><div class="flash"><span class="k">Next</span><h5></h5></div></div></div>
+  <div class="browser" hidden><div class="chrome"><i></i><i></i><i></i><span class="addr">core.tenmarkcapital.com/visits</span></div><div class="bscreen"><img alt=""><span class="scrollhint">Scroll for more ↓</span><div class="flash"><span class="k">Next</span><h5></h5></div></div></div></div>
   <div class="read"><div class="fig"><span class="num"></span><span class="of"></span></div><div class="chips"><span class="chip app"></span><span class="chip lab"></span></div><h3></h3><p></p>
   <div class="controls"><button class="nav prev">← Prev</button><button class="nav primary next">Next →</button></div></div>`;
   sec.append(pl);
   const dots=document.createElement('div');dots.className='dots';sec.append(dots);
   if(g==='e2e'){const lg=document.createElement('div');lg.className='legend';lg.innerHTML='<span>Customer app</span><span class="p">Partner app</span><span class="c">Tenmark CORE</span>';sec.append(lg);}
-  const q=s=>pl.querySelector(s), img=q('img'), scr=q('.screen')||q('.bscreen'), hint=q('.scrollhint'), flash=q('.flash');
+  const q=s=>pl.querySelector(s);
+  const F={phone:{box:q('.phone'),scr:q('.screen'),img:q('.screen img'),hint:q('.screen .scrollhint'),flash:q('.screen .flash')},
+           desk:{box:q('.browser'),scr:q('.bscreen'),img:q('.bscreen img'),hint:q('.bscreen .scrollhint'),flash:q('.bscreen .flash')}};
+  let cur=F.phone, img, scr, hint, flash;
   let f=flows[0], idx=0, prev=-1;
+  function use(k){cur=F[k];img=cur.img;scr=cur.scr;hint=cur.hint;flash=cur.flash;F.phone.box.hidden=k!=='phone';F.desk.box.hidden=k!=='desk';pl.classList.toggle('wide',k==='desk');}
   function hintCheck(){hint.style.opacity=(scr.scrollHeight-scr.clientHeight>24&&scr.scrollTop<12)?1:0;}
-  scr.addEventListener('scroll',hintCheck);
-  img.addEventListener('load',()=>{scr.scrollTop=0;hintCheck();});
+  Object.values(F).forEach(o=>{o.scr.addEventListener('scroll',hintCheck);o.img.addEventListener('load',()=>{o.scr.scrollTop=0;hintCheck();});o.img.onclick=()=>{document.getElementById('lbimg').src=o.img.src;document.getElementById('lb').classList.add('on');};});
   function render(){
     const id=f.ids[idx], s=DATA.screens[id];
+    use(s.a==='core'?'desk':'phone');
     img.src='assets/'+s.a+'/'+id+'.jpg'; img.alt=s.t;
     q('.num').textContent=idx+1; q('.of').textContent='/ '+f.ids.length;
     q('.app').textContent=APP[s.a]; q('.lab').textContent=s.l; q('h3').textContent=s.t; q('.read p').textContent=s.c;
@@ -269,7 +273,6 @@ document.querySelectorAll('[data-group]').forEach(sec=>{
   dots.onclick=e=>{const d=e.target.closest('.dot');if(d){idx=+d.dataset.k;render();}};
   q('.prev').onclick=()=>{if(idx>0){idx--;render();}};
   q('.next').onclick=()=>{if(idx<f.ids.length-1){idx++;render();}};
-  img.onclick=()=>{document.getElementById('lbimg').src=img.src;document.getElementById('lb').classList.add('on');};
   players.push({sec,next:()=>q('.next').click(),prev:()=>q('.prev').click()});
   load(0);
 });
