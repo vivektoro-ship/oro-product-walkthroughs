@@ -81,6 +81,16 @@ td b{font-weight:700}
 .pbar{height:3px;background:var(--rule);border-radius:3px;overflow:hidden;margin-top:18px}
 .pbar i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
 
+.player.wide{grid-template-columns:1fr}
+.player.wide .read{order:-1}
+.browser{width:100%;max-width:1060px;margin:0 auto;background:var(--panel);border:1px solid var(--rule);border-radius:12px;overflow:hidden;box-shadow:0 30px 60px -28px rgba(27,57,196,.3)}
+.browser .chrome{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#EEF1F7;border-bottom:1px solid var(--rule)}
+.browser .chrome i{width:10px;height:10px;border-radius:50%;background:var(--rule-strong);display:block}
+.browser .addr{flex:1;max-width:60%;margin:0 auto;font-family:var(--mono);font-size:10px;color:var(--ink-faded);background:#fff;border:1px solid var(--rule);border-radius:6px;padding:4px 10px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bscreen{position:relative;max-height:calc(100vh - 230px);overflow:auto;scrollbar-width:none}
+.bscreen::-webkit-scrollbar{display:none}
+.bscreen img{display:block;width:100%;height:auto;cursor:pointer}
+.dot.core{border-bottom:3px solid #9AA3B5}
 /* player */
 .player{display:grid;grid-template-columns:minmax(0,340px) 1fr;gap:clamp(24px,5vw,60px);align-items:center;margin-top:28px}
 @media(max-width:820px){.player{grid-template-columns:1fr;gap:22px}}
@@ -118,6 +128,7 @@ td b{font-weight:700}
 .legend{display:flex;gap:14px;margin-top:10px;font-size:12px;color:var(--ink-faded);flex-wrap:wrap}
 .legend span::before{content:"";display:inline-block;width:14px;height:3px;margin-right:6px;vertical-align:middle;background:#EBC867}
 .legend span.p::before{background:#9DB0F5}
+.legend span.c::before{background:#9AA3B5}
 
 .lb{position:fixed;inset:0;z-index:60;background:rgba(10,14,28,.94);display:none;overflow:auto;padding:40px 16px;cursor:zoom-out}
 .lb.on{display:block}
@@ -129,7 +140,7 @@ footer{text-align:center;padding:56px 0 72px;color:var(--ink-faded);font-family:
 <body>
 <div class="topbar"><div class="inner">
   <span class="brand"><i></i>TCPL Release Visit</span>
-  <nav><a href="#overview">Overview</a><a href="#e2e">End to end</a><a href="#cx">Customer app</a><a href="#px">Partner app</a><a href="#status">Status</a></nav>
+  <nav><a href="#overview">Overview</a><a href="#e2e">End to end</a><a href="#cx">Customer app</a><a href="#px">Partner app</a><a href="#core">Admin</a><a href="#status">Status</a></nav>
 </div></div>
 
 <div class="wrap">
@@ -137,7 +148,7 @@ footer{text-align:center;padding:56px 0 72px;color:var(--ink-faded);font-family:
     <div class="kicker">Tenmark Capital · Gold loan release</div>
     <h1>Release visit revamp walkthrough</h1>
     <p>How a closed Tenmark gold loan is released, screen by screen, in the Oromoney customer app and the Tenmark Partner App. It covers both release paths: a <b>normal release</b>, where the customer collects in person, and a <b>third-party release</b>, where someone collects on the customer’s behalf.</p>
-    <div class="facts"><span><b>2</b> release paths</span><span><b>2</b> apps</span><span id="fcount"></span><span>Spec · ENG-5409</span></div>
+    <div class="facts"><span><b>2</b> release paths</span><span><b>2</b> apps + admin</span><span id="fcount"></span><span>Spec · ENG-5409</span></div>
   </header>
 
   <section class="sec" id="overview">
@@ -172,6 +183,11 @@ footer{text-align:center;padding:56px 0 72px;color:var(--ink-faded);font-family:
     <p class="lead">Every screen the Tenmark partner uses at the branch, with failure and edge states placed where they occur.</p>
   </section>
 
+  <section class="sec" id="core" data-group="core">
+    <div class="shead"><span class="k">Tenmark</span><h2>Admin · Tenmark CORE</h2><span class="c" data-count></span></div>
+    <p class="lead">The web console where Tenmark tracks every release visit, reviews third-party documents, and approves or rejects. Approve and Reject exist only for third-party releases; normal releases are view-only here.</p>
+  </section>
+
   <section class="sec" id="status">
     <div class="shead"><span class="k">Reference</span><h2>Status across surfaces</h2></div>
     <div class="tbl"><table>
@@ -202,11 +218,12 @@ footer{text-align:center;padding:56px 0 72px;color:var(--ink-faded);font-family:
 
 <script>
 const DATA=/*DATA*/;
-const APP={cx:'Customer app',px:'Partner app'};
+const APP={cx:'Customer app',px:'Partner app',core:'Tenmark CORE'};
 let total=0;
 const players=[];
 document.querySelectorAll('[data-group]').forEach(sec=>{
   const g=sec.dataset.group, flows=DATA.flows.filter(f=>f.g===g);
+  if(!flows.length){sec.remove();document.querySelector('a[href="#'+sec.id+'"]')?.remove();return;}
   sec.querySelector('[data-count]').textContent=flows.reduce((a,f)=>a+f.ids.length,0)+' screens · '+flows.length+' flows';
   const tabs=document.createElement('div');tabs.className='tabs';tabs.setAttribute('role','tablist');
   tabs.innerHTML=flows.map((f,i)=>`<button class="tab${i?'':' on'}" role="tab" data-i="${i}"><b>${f.ids.length}</b>${f.n}</button>`).join('');
@@ -214,13 +231,17 @@ document.querySelectorAll('[data-group]').forEach(sec=>{
   const intro=document.createElement('p');intro.className='intro';sec.append(intro);
   const bar=document.createElement('div');bar.className='pbar';bar.innerHTML='<i></i>';sec.append(bar);
   const pl=document.createElement('div');pl.className='player';
-  pl.innerHTML=`<div class="framecol"><div class="phone"><div class="notch"></div><div class="screen"><img alt=""><span class="scrollhint">Scroll for more ↓</span><div class="flash"><span class="k">Next</span><h5></h5></div></div></div></div>
+  const desk=flows.every(f=>f.ids.every(id=>DATA.screens[id].a==='core'));
+  if(desk) pl.classList.add('wide');
+  pl.innerHTML=desk?`<div class="framecol"><div class="browser"><div class="chrome"><i></i><i></i><i></i><span class="addr">core.tenmarkcapital.com/visits</span></div><div class="bscreen screen-d"><img alt=""><span class="scrollhint">Scroll for more ↓</span><div class="flash"><span class="k">Next</span><h5></h5></div></div></div></div>
+  <div class="read"><div class="fig"><span class="num"></span><span class="of"></span></div><div class="chips"><span class="chip app"></span><span class="chip lab"></span></div><h3></h3><p></p>
+  <div class="controls"><button class="nav prev">← Prev</button><button class="nav primary next">Next →</button></div></div>`:`<div class="framecol"><div class="phone"><div class="notch"></div><div class="screen"><img alt=""><span class="scrollhint">Scroll for more ↓</span><div class="flash"><span class="k">Next</span><h5></h5></div></div></div></div>
   <div class="read"><div class="fig"><span class="num"></span><span class="of"></span></div><div class="chips"><span class="chip app"></span><span class="chip lab"></span></div><h3></h3><p></p>
   <div class="controls"><button class="nav prev">← Prev</button><button class="nav primary next">Next →</button></div></div>`;
   sec.append(pl);
   const dots=document.createElement('div');dots.className='dots';sec.append(dots);
-  if(g==='e2e'){const lg=document.createElement('div');lg.className='legend';lg.innerHTML='<span>Customer app</span><span class="p">Partner app</span>';sec.append(lg);}
-  const q=s=>pl.querySelector(s), img=q('img'), scr=q('.screen'), hint=q('.scrollhint'), flash=q('.flash');
+  if(g==='e2e'){const lg=document.createElement('div');lg.className='legend';lg.innerHTML='<span>Customer app</span><span class="p">Partner app</span><span class="c">Tenmark CORE</span>';sec.append(lg);}
+  const q=s=>pl.querySelector(s), img=q('img'), scr=q('.screen')||q('.bscreen'), hint=q('.scrollhint'), flash=q('.flash');
   let f=flows[0], idx=0, prev=-1;
   function hintCheck(){hint.style.opacity=(scr.scrollHeight-scr.clientHeight>24&&scr.scrollTop<12)?1:0;}
   scr.addEventListener('scroll',hintCheck);
