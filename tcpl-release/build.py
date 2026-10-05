@@ -4,7 +4,8 @@
 Screens are 2x Figma exports (third-party partner screens at 1.48x, the
 section is wider than Figma's export cap) from file T5JDdFqTJVi2pgTGeCzU3S,
 sections 2639:65883 (customer app), 2639:70726 (partner app, normal release)
-and 2639:74066 (partner app, third-party release). Spec: ENG-5409.
+2639:74066 (partner app, third-party release) and 2639:72454 (partner app,
+item mismatch). Spec: ENG-5409.
 """
 import json, pathlib
 
@@ -219,6 +220,30 @@ FLOWS += [
  ('core','core-blocked','Item mismatch','Any item marked not matched blocks the release. CORE shows the flagged item with reasons and images.', L('2639-79173 2639-79400')),
  ('core','core-loan','Loan status','The two loan statuses around a release.', L('2639-82197 2639-82424')),
 ]
+
+
+# ---------------- partner app: item mismatch ----------------
+S.update({
+'2639-73112': ('px','Gold verification','Gold verification listing','Every item is under Pending verification and progress reads 0 of 5 items verified. Start Verification opens the first item.'),
+'2639-73185': ('px','Gold verification','Gold items summary','Expanded summary: item count, gross weight, total deduction, net weight and 22C net weight (ANW).'),
+'2639-73477': ('px','Gold verification','Verify Gold Item','The partner compares the item with its valuation photos, weights, remarks and gold markings, then taps Not matched or Matched.'),
+'2639-73706': ('px','Item mismatch','Mark as Not Matched','Select mismatch reason: Loss of Ornaments, Damage of Ornaments, Stone Missing in Ornaments, Gold Weight Reduction in Ornaments, Bend / Breakage in Ornaments, Change in ornament type, Specific part missing from the ornament.'),
+'2639-73747': ('px','Item mismatch','Reasons selected','More than one reason can be selected. The arrow continues once at least one is ticked.'),
+'2639-73547': ('px','Item mismatch','Capture Gold Item','“Ensure the object is completely within the rectangle before capturing the photo.” A photo is mandatory.'),
+'2639-73562': ('px','Item mismatch','Item captured','The partner can retake the photo or continue with the arrow.'),
+'2639-73577': ('px','Item mismatch','Add photos and remarks','add more attaches extra photos. Item remarks are recorded with the mismatch. Mark as not matched confirms.'),
+'3036-63426': ('px','Item mismatch','Item marked as not matched','A red toast confirms. The item moves to Verified items with a red warning badge and progress reads 3 of 5 items verified.'),
+'2639-73596': ('px','Item mismatch','Resume Verification','The partner continues with the remaining items. Verified items can still be changed with Edit.'),
+'2639-73863': ('px','Item mismatch','5 of 5 items verified','Every item has an outcome, including the not matched one. Complete Verification is enabled.'),
+'2639-73954': ('px','Item mismatch','Are you sure you want to complete verification?','“You marked 2 items as not matched.” Complete verification submits the outcome.'),
+'2639-74055': ('px','Item mismatch','Release Blocked','“Verification completed but valuation mismatch. This visit is on hold. Please contact tech support.” The gold is not handed over.'),
+})
+MISMATCH = L('2639-73112 2639-73185 2639-73477 2639-73706 2639-73747 2639-73547 2639-73562 2639-73577 3036-63426 2639-73596 2639-73863 2639-73954 2639-74055')
+FLOWS.insert([i for i,f in enumerate(FLOWS) if f[1]=='e2e-normal'][0]+1,
+ ('e2e','e2e-mismatch','Item mismatch','Customer and gold verification start as in a normal release. The partner marks an item not matched, the release is blocked, the customer sees Release blocked and CORE flags the item.',
+  BOOK + L('2639-65884 2639-66620') + PX_PICK + L('2639-66744 2639-69024 2639-71444 2639-71021 2773-27953 2773-27933 2773-27925 2773-27973 2639-71074 2639-71431 2639-66892') + MISMATCH + L('2639-66976 2639-79173 2639-79400')))
+FLOWS.insert([i for i,f in enumerate(FLOWS) if f[1]=='px-normal'][0]+1,
+ ('px','px-mismatch','Item mismatch','Tenmark Partner App, regular path where an item does not match its valuation: mismatch reasons, photo, remarks, completion and Release Blocked.', MISMATCH))
 
 for _,_,_,_,ids in FLOWS:
     for i in ids:
